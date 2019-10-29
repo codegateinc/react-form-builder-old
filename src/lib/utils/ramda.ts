@@ -6,6 +6,7 @@ const isEqual = <T = {}>(comparator: any, followingValue?: any) => (value: T) =>
     comparator(value) === followingValue :
     value === comparator
 /* tslint:enable no-any */
+const hasElements = (array: Array<any>) => Array.isArray(array) && array.length > 0
 
 const all = (...args: Array<boolean>) => !args.some(arg => !Boolean(arg))
 
@@ -18,5 +19,6 @@ export {
     isDefined,
     all,
     always,
-    T
+    T,
+    hasElements
 }

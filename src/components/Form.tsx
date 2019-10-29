@@ -113,8 +113,8 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    showErrorsOnSubmit() {
-        const checkedFormFields = R
+    checkedFormFields(newValue?: string) {
+        return R
             .toPairs(this.state.form)
             .filter(([fieldName, fieldObject]) =>
                 fieldObject.isRequired ||
@@ -133,7 +133,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                         ],
                         [
                             () => Boolean(compareWith),
-                            () => fieldProperties.value !== (this.state.form[compareWith!.fieldName] as FormInputConfigProps).value
+                            () => fieldProperties.value !== (newValue || (this.state.form[compareWith!.fieldName] as FormInputConfigProps).value)
                                 ? compareWith!.errorMessage
                                 : undefined
                         ],
@@ -168,6 +168,10 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ...acc,
                 [fieldName as string]: fieldObject
             }), {})
+    }
+
+    showErrorsOnSubmit() {
+        const checkedFormFields = this.checkedFormFields()
 
         this.setState({
             form: {
@@ -237,6 +241,21 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         return checkboxConfig.validationRule.validationFunction(checkboxValue)
     }
 
+    resetStateErrors() {
+        const clearedForm = R.toPairs(this.state.form)
+            .reduce((acc, [ fieldName, fieldObject ]) => ({
+                ...acc,
+                [fieldName]: {
+                    ...fieldObject,
+                    hasError: undefined
+                }
+            }), {} as FormBuilderState)
+
+        this.setState({
+            form: clearedForm
+        })
+    }
+
     submitForm() {
         if (!this.isFormValid || !this.hasValidCompares) {
             return this.showErrorsOnSubmit()
@@ -272,6 +291,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 }
             }, {}) as T
 
+        this.resetStateErrors()
         this.props.onFormSubmit(form)
     }
 
@@ -321,7 +341,25 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             ? valueParser(value)
             : value
 
-        // todo handle compare check to get rid of error that doesnt exist anymore
+        const compareWith = R.toPairs(this.props.formConfig)
+            .reduce((acc, [ fieldName, fieldObject ]) => {
+                if (fieldObject.fieldType === FormField.Input) {
+                    const castedFieldObject = fieldObject as FormInputConfigProps
+                    const compareWith = castedFieldObject.compareWith as InputCompareWith
+
+                    return compareWith && compareWith.fieldName === formFieldName
+                        ? [
+                            ...acc,
+                            fieldName
+                        ] : acc
+                }
+
+                return acc
+            }, [] as Array<string>)
+
+        const checkedState = R.hasElements(compareWith) && compareWith.some(fieldName => this.state.form[fieldName].hasError)
+            ? this.checkedFormFields(value)
+            : {}
 
         const isValid = shouldLiveCheck
             ? this.validateField(formFieldName, newValue)
@@ -336,13 +374,14 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         this.setState({
             form: {
                 ...this.state.form,
+                ...checkedState,
                 [formFieldName]: {
                     ...this.state.form[formFieldName],
                     value: newValue,
                     isValid,
                     hasError: errorMessage,
                     isPristine
-                }
+                },
             }
         })
     }
@@ -372,7 +411,22 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         const isSingleValueMode = pickerConfig.pickerMode === CustomPickerMode.Single
         const currentPickerState = this.state.form[fieldName] as FormCustomPickerState
 
-        // todo handle isPristine in customPicker
+        const updatedPickerOptions = currentPickerState.options.map(stateOption => {
+            if (stateOption.value === option.value) {
+                return option
+            }
+
+            if (isSingleValueMode) {
+                return {
+                    ...stateOption,
+                    isSelected: false
+                }
+            }
+
+            return stateOption
+        })
+
+        const isPristine = updatedPickerOptions.every((updatedOption, index) => updatedOption.isSelected === pickerConfig.options[index].isSelected)
 
         return this.setState({
             form: {
@@ -380,7 +434,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 [fieldName]: {
                     ...currentPickerState,
                     hasError: undefined,
-                    isPristine: false,
+                    isPristine,
                     options: currentPickerState.options.map(currentStateOption => {
                         if (isSingleValueMode) {
                             return currentStateOption.value === option.value
