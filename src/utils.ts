@@ -6,8 +6,7 @@ import {
     FormConfig,
     FormCustomPickerConfigProps,
     FormField,
-    FormInputConfigProps,
-    InputCompareWith
+    FormInputConfigProps
 } from './types'
 
 export const prepareFormInitialState = (formConfig: FormConfig) => {
@@ -22,22 +21,7 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
                     isRequired: config.isRequired,
                     value: isValidInputValue ? inputConfig.value : '',
                     fieldType: config.fieldType,
-                    isPristine: true,
-                    comparedWith: R.toPairs(formConfig)
-                        .reduce((acc, [ field, fieldObject ]) => {
-                            if (fieldObject.fieldType === FormField.Input) {
-                                const castedFieldObject = fieldObject as FormInputConfigProps
-                                const compareWith = castedFieldObject.compareWith as InputCompareWith
-
-                                return compareWith && compareWith.fieldName === fieldName
-                                    ? [
-                                        ...acc,
-                                        field
-                                    ] : acc
-                            }
-
-                            return acc
-                        }, [] as Array<string>)
+                    isPristine: true
                 }]
             }
 

@@ -61,8 +61,7 @@ export interface FormInputState extends FormFieldBase {
     isValid: boolean,
     hasError?: string,
     value: string,
-    isPristine: boolean,
-    comparedWith: Array<string>
+    isPristine: boolean
 }
 
 export interface FormCheckboxState extends FormFieldBase {

@@ -17,7 +17,7 @@ import {
     FormInputConfigProps,
     FormInputState,
     InputCompareWith,
-    InputProps,
+    InputProps
 } from '../types'
 import { Input } from './Input'
 import { CustomPicker } from './CustomPicker'
@@ -175,13 +175,11 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
 
     checkedFormField(fieldName: string, value?: string) {
         const formField = this.state.form[fieldName]
-        const validatedFormField = this.checkValidField(fieldName, formField, value)
+        const [field, fieldObject] = this.checkValidField(fieldName, formField, value)
 
-        return [validatedFormField]
-            .reduce((acc, [fieldName, fieldObject]) => ({
-                ...acc,
-                [fieldName as string]: fieldObject
-            }), {})
+        return {
+            [field as string]: fieldObject as FieldState
+        }
     }
 
     showErrorsOnSubmit() {
@@ -333,18 +331,15 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
 
     onTextChange(value: string, formFieldName: string) {
         const formField = this.state.form[formFieldName] as FormInputState
+        const propsFormField = this.props.formConfig[formFieldName] as FormInputConfigProps
         const shouldLiveCheck = Boolean(formField.hasError) || this.isFormValid
         const valueParser = (this.props.formConfig[formFieldName] as FormInputConfigProps).liveParser
         const newValue = valueParser
             ? valueParser(value)
             : value
 
-        const checkedState = shouldLiveCheck
-            ? formField.comparedWith.map(comparedWith => this.checkedFormField(comparedWith, value))
-                .reduce((acc, state) => ({
-                    ...acc,
-                    ...state
-                }), {})
+        const checkedState = shouldLiveCheck && propsFormField.compareWith
+            ? this.checkedFormField(propsFormField.compareWith.fieldName, value)
             : {}
 
         const isValid = shouldLiveCheck
