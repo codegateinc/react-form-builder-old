@@ -164,7 +164,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             .toPairs(this.state.form)
             .filter(([fieldName, fieldObject]) =>
                 fieldObject.isRequired ||
-                (fieldObject.fieldType === FormField.Input && Boolean((fieldObject as FormInputState).value) && Boolean((this.props.formConfig[fieldName] as FormInputConfigProps).validationRules))
+                (fieldObject.fieldType === FormField.Input && Boolean((fieldObject as FormInputState).value) && Boolean(((this.props.formConfig[fieldName] as FormInputConfigProps).validationRules) || (this.props.formConfig[fieldName] as FormInputConfigProps).compareWith))
             )
             .map(([fieldName, fieldObject]) => this.checkValidField(fieldName, fieldObject))
             .reduce((acc, [fieldName, fieldObject]) => ({
