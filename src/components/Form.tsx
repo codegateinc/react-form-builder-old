@@ -17,7 +17,7 @@ import {
     FormInputConfigProps,
     FormInputState,
     InputCompareWith,
-    InputProps
+    InputProps,
 } from '../types'
 import { Input } from './Input'
 import { CustomPicker } from './CustomPicker'
@@ -44,6 +44,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         this.submitForm = this.submitForm.bind(this)
         this.renderChild = this.renderChild.bind(this)
         this.handleFormError = this.handleFormError.bind(this)
+        this.checkedFormFields = this.checkedFormFields.bind(this)
     }
 
     get isFormValid() {
@@ -113,57 +114,70 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    checkedFormFields(newValue?: string) {
+    checkValidField(fieldName: string, fieldObject: FieldState, value?: string) {
+        if (fieldObject.fieldType === FormField.Input) {
+            const fieldProperties = fieldObject as FormInputState
+            const isValid = this.validateField(fieldName, fieldProperties.value as string)
+            const { compareWith } = this.props.formConfig[fieldName] as FormInputConfigProps
+
+            const hasError = R.cond([
+                [
+                    () => !isValid,
+                    () => this.getFieldErrorMessage(fieldName, fieldProperties.value as string)
+                ],
+                [
+                    () => Boolean(compareWith),
+                    () => fieldProperties.value !== (value || (this.state.form[compareWith!.fieldName] as FormInputConfigProps).value)
+                        ? compareWith!.errorMessage
+                        : undefined
+                ],
+                [
+                    R.T,
+                    R.always(undefined)
+                ]
+            ])()
+
+            return [fieldName, {
+                ...fieldObject,
+                isValid,
+                hasError
+            }]
+        }
+
+        if (fieldObject.fieldType === FormField.Checkbox) {
+            return [fieldName, {
+                ...fieldObject,
+                hasError: this.getCheckboxErrorMessage(fieldName, (fieldObject as FormCheckboxState).value)
+            }]
+        }
+
+        // CustomPicker
+
+        return [fieldName, {
+            ...fieldObject,
+            hasError: this.getCustomPickerErrorMessage(fieldName),
+        }]
+    }
+
+    checkedFormFields() {
         return R
             .toPairs(this.state.form)
             .filter(([fieldName, fieldObject]) =>
                 fieldObject.isRequired ||
                 (fieldObject.fieldType === FormField.Input && Boolean((fieldObject as FormInputState).value) && Boolean((this.props.formConfig[fieldName] as FormInputConfigProps).validationRules))
             )
-            .map(([fieldName, fieldObject]) => {
-                if (fieldObject.fieldType === FormField.Input) {
-                    const fieldProperties = fieldObject as FormInputState
-                    const isValid = this.validateField(fieldName, fieldProperties.value as string)
-                    const { compareWith } = this.props.formConfig[fieldName] as FormInputConfigProps
+            .map(([fieldName, fieldObject]) => this.checkValidField(fieldName, fieldObject))
+            .reduce((acc, [fieldName, fieldObject]) => ({
+                ...acc,
+                [fieldName as string]: fieldObject
+            }), {})
+    }
 
-                    const hasError = R.cond([
-                        [
-                            () => !isValid,
-                            () => this.getFieldErrorMessage(fieldName, fieldProperties.value as string)
-                        ],
-                        [
-                            () => Boolean(compareWith),
-                            () => fieldProperties.value !== (newValue || (this.state.form[compareWith!.fieldName] as FormInputConfigProps).value)
-                                ? compareWith!.errorMessage
-                                : undefined
-                        ],
-                        [
-                            R.T,
-                            R.always(undefined)
-                        ]
-                    ])()
+    checkedFormField(fieldName: string, value?: string) {
+        const formField = this.state.form[fieldName]
+        const validatedFormField = this.checkValidField(fieldName, formField, value)
 
-                    return [fieldName, {
-                        ...fieldObject,
-                        isValid,
-                        hasError
-                    }]
-                }
-
-                if (fieldObject.fieldType === FormField.Checkbox) {
-                    return [fieldName, {
-                        ...fieldObject,
-                        hasError: this.getCheckboxErrorMessage(fieldName, (fieldObject as FormCheckboxState).value)
-                    }]
-                }
-
-                // CustomPicker
-
-                return [fieldName, {
-                    ...fieldObject,
-                    hasError: this.getCustomPickerErrorMessage(fieldName),
-                }]
-            })
+        return [validatedFormField]
             .reduce((acc, [fieldName, fieldObject]) => ({
                 ...acc,
                 [fieldName as string]: fieldObject
@@ -241,21 +255,6 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         return checkboxConfig.validationRule.validationFunction(checkboxValue)
     }
 
-    resetStateErrors() {
-        const clearedForm = R.toPairs(this.state.form)
-            .reduce((acc, [ fieldName, fieldObject ]) => ({
-                ...acc,
-                [fieldName]: {
-                    ...fieldObject,
-                    hasError: undefined
-                }
-            }), {} as FormBuilderState)
-
-        this.setState({
-            form: clearedForm
-        })
-    }
-
     submitForm() {
         if (!this.isFormValid || !this.hasValidCompares) {
             return this.showErrorsOnSubmit()
@@ -291,7 +290,6 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 }
             }, {}) as T
 
-        this.resetStateErrors()
         this.props.onFormSubmit(form)
     }
 
@@ -341,24 +339,12 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             ? valueParser(value)
             : value
 
-        const compareWith = R.toPairs(this.props.formConfig)
-            .reduce((acc, [ fieldName, fieldObject ]) => {
-                if (fieldObject.fieldType === FormField.Input) {
-                    const castedFieldObject = fieldObject as FormInputConfigProps
-                    const compareWith = castedFieldObject.compareWith as InputCompareWith
-
-                    return compareWith && compareWith.fieldName === formFieldName
-                        ? [
-                            ...acc,
-                            fieldName
-                        ] : acc
-                }
-
-                return acc
-            }, [] as Array<string>)
-
-        const checkedState = R.hasElements(compareWith) && compareWith.some(fieldName => this.state.form[fieldName].hasError)
-            ? this.checkedFormFields(value)
+        const checkedState = shouldLiveCheck
+            ? formField.comparedWith.map(comparedWith => this.checkedFormField(comparedWith, value))
+                .reduce((acc, state) => ({
+                    ...acc,
+                    ...state
+                }), {})
             : {}
 
         const isValid = shouldLiveCheck
@@ -411,22 +397,38 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         const isSingleValueMode = pickerConfig.pickerMode === CustomPickerMode.Single
         const currentPickerState = this.state.form[fieldName] as FormCustomPickerState
 
-        const updatedPickerOptions = currentPickerState.options.map(stateOption => {
-            if (stateOption.value === option.value) {
-                return option
-            }
-
+        const updatedPickerOptions = currentPickerState.options.map(currentStateOption => {
             if (isSingleValueMode) {
-                return {
-                    ...stateOption,
-                    isSelected: false
-                }
+                return currentStateOption.value === option.value
+                    ? option
+                    : {
+                        ...currentStateOption,
+                        isSelected: false
+                    }
             }
 
-            return stateOption
+            return currentStateOption.value === option.value
+                ? option
+                : currentStateOption
         })
 
-        const isPristine = updatedPickerOptions.every((updatedOption, index) => updatedOption.isSelected === pickerConfig.options[index].isSelected)
+        const updatedPickerValues = updatedPickerOptions.reduce((acc, updatedOption) => ({
+            ...acc,
+            [updatedOption.value]: updatedOption.isSelected
+        }), {})
+        const pickerConfigValues = pickerConfig.options.reduce((acc, pickerOption) => ({
+            ...acc,
+            [pickerOption.value]: pickerOption.isSelected
+        }), {})
+
+        const isPristine = R.toPairs(updatedPickerValues)
+            .every(([key, value]) => {
+                if (R.isDefined(pickerConfigValues[key])) {
+                    return pickerConfigValues[key] === value
+                }
+
+                return false
+            })
 
         return this.setState({
             form: {
@@ -435,20 +437,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                     ...currentPickerState,
                     hasError: undefined,
                     isPristine,
-                    options: currentPickerState.options.map(currentStateOption => {
-                        if (isSingleValueMode) {
-                            return currentStateOption.value === option.value
-                                ? option
-                                : {
-                                    ...currentStateOption,
-                                    isSelected: false
-                                }
-                        }
-
-                        return currentStateOption.value === option.value
-                            ? option
-                            : currentStateOption
-                    })
+                    options: updatedPickerOptions
                 }
             }
         })
