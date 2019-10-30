@@ -1,7 +1,8 @@
 import { R } from 'lib/utils'
 import {
     FieldState,
-    FormBuilderState, FormCheckboxConfigProps,
+    FormBuilderState,
+    FormCheckboxConfigProps,
     FormConfig,
     FormCustomPickerConfigProps,
     FormField,

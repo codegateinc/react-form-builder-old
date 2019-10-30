@@ -44,6 +44,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         this.submitForm = this.submitForm.bind(this)
         this.renderChild = this.renderChild.bind(this)
         this.handleFormError = this.handleFormError.bind(this)
+        this.checkedFormFields = this.checkedFormFields.bind(this)
     }
 
     get isFormValid() {
@@ -113,61 +114,75 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    showErrorsOnSubmit() {
-        const checkedFormFields = R
+    checkFieldValidation(fieldName: string, fieldObject: FieldState, value?: string) {
+        if (fieldObject.fieldType === FormField.Input) {
+            const fieldProperties = fieldObject as FormInputState
+            const isValid = this.validateField(fieldName, fieldProperties.value as string)
+            const { compareWith } = this.props.formConfig[fieldName] as FormInputConfigProps
+
+            const hasError = R.cond([
+                [
+                    () => !isValid,
+                    () => this.getFieldErrorMessage(fieldName, fieldProperties.value as string)
+                ],
+                [
+                    () => Boolean(compareWith),
+                    () => fieldProperties.value !== (value || (this.state.form[compareWith!.fieldName] as FormInputConfigProps).value)
+                        ? compareWith!.errorMessage
+                        : undefined
+                ],
+                [
+                    R.T,
+                    R.always(undefined)
+                ]
+            ])()
+
+            return [fieldName, {
+                ...fieldObject,
+                isValid,
+                hasError
+            }]
+        }
+
+        if (fieldObject.fieldType === FormField.Checkbox) {
+            return [fieldName, {
+                ...fieldObject,
+                hasError: this.getCheckboxErrorMessage(fieldName, (fieldObject as FormCheckboxState).value)
+            }]
+        }
+
+        // CustomPicker
+
+        return [fieldName, {
+            ...fieldObject,
+            hasError: this.getCustomPickerErrorMessage(fieldName),
+        }]
+    }
+
+    checkedFormFields() {
+        return R
             .toPairs(this.state.form)
             .filter(([fieldName, fieldObject]) =>
                 fieldObject.isRequired ||
                 (fieldObject.fieldType === FormField.Input && Boolean((fieldObject as FormInputState).value) && Boolean((this.props.formConfig[fieldName] as FormInputConfigProps).validationRules))
             )
-            .map(([fieldName, fieldObject]) => {
-                if (fieldObject.fieldType === FormField.Input) {
-                    const fieldProperties = fieldObject as FormInputState
-                    const isValid = this.validateField(fieldName, fieldProperties.value as string)
-                    const { compareWith } = this.props.formConfig[fieldName] as FormInputConfigProps
-
-                    const hasError = R.cond([
-                        [
-                            () => !isValid,
-                            () => this.getFieldErrorMessage(fieldName, fieldProperties.value as string)
-                        ],
-                        [
-                            () => Boolean(compareWith),
-                            () => fieldProperties.value !== (this.state.form[compareWith!.fieldName] as FormInputConfigProps).value
-                                ? compareWith!.errorMessage
-                                : undefined
-                        ],
-                        [
-                            R.T,
-                            R.always(undefined)
-                        ]
-                    ])()
-
-                    return [fieldName, {
-                        ...fieldObject,
-                        isValid,
-                        hasError
-                    }]
-                }
-
-                if (fieldObject.fieldType === FormField.Checkbox) {
-                    return [fieldName, {
-                        ...fieldObject,
-                        hasError: this.getCheckboxErrorMessage(fieldName, (fieldObject as FormCheckboxState).value)
-                    }]
-                }
-
-                // CustomPicker
-
-                return [fieldName, {
-                    ...fieldObject,
-                    hasError: this.getCustomPickerErrorMessage(fieldName),
-                }]
-            })
+            .map(([fieldName, fieldObject]) => this.checkFieldValidation(fieldName, fieldObject))
             .reduce((acc, [fieldName, fieldObject]) => ({
                 ...acc,
                 [fieldName as string]: fieldObject
             }), {})
+    }
+
+    fieldHasValidCompares(fieldName: string, compareWith: string, value?: string) {
+        const formField = this.state.form[compareWith] as FormInputState
+        const [, fieldObject] = this.checkFieldValidation(fieldName, formField, value)
+        const validatedFieldObject = fieldObject as FieldState
+
+        return !Boolean(validatedFieldObject.hasError)
+    }
+
+    showErrorsOnSubmit() {
+        const checkedFormFields = this.checkedFormFields()
 
         this.setState({
             form: {
@@ -313,36 +328,81 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         return
     }
 
+    validateComparedFields(valueToCompare: string, compareFieldName: string) {
+        const fieldToCompare = this.state.form[compareFieldName] as FormInputState
+        const compareFieldsConfigProps = this.props.formConfig[compareFieldName] as FormInputConfigProps
+        const shouldLiveCheckCompareWith = Boolean(fieldToCompare.hasError) || !fieldToCompare.isPristine
+        const isValid = this.validateField(compareFieldName, fieldToCompare.value)
+
+        if (!isValid) {
+            return {
+                [compareFieldName]: fieldToCompare
+            }
+        }
+
+        if (valueToCompare === fieldToCompare.value && shouldLiveCheckCompareWith) {
+            return {
+                [compareFieldName]: {
+                    ...fieldToCompare,
+                    hasError: undefined
+                }
+            }
+        }
+
+        const newComparedFiledState = !shouldLiveCheckCompareWith
+            ? {
+                ...fieldToCompare,
+                hasError: undefined
+            } : {
+                ...fieldToCompare,
+                hasError: compareFieldsConfigProps.compareWith && compareFieldsConfigProps.compareWith.errorMessage
+            }
+
+        return {
+            [compareFieldName]: newComparedFiledState
+        }
+    }
+
     onTextChange(value: string, formFieldName: string) {
         const formField = this.state.form[formFieldName] as FormInputState
+        const formFieldConfigProps = this.props.formConfig[formFieldName] as FormInputConfigProps
         const shouldLiveCheck = Boolean(formField.hasError) || this.isFormValid
         const valueParser = (this.props.formConfig[formFieldName] as FormInputConfigProps).liveParser
         const newValue = valueParser
             ? valueParser(value)
             : value
 
-        // todo handle compare check to get rid of error that doesnt exist anymore
-
         const isValid = shouldLiveCheck
             ? this.validateField(formFieldName, newValue)
             : formField.isValid
 
+        const hasValidCompare = isValid && shouldLiveCheck && Boolean(formFieldConfigProps.compareWith)
+            ? this.fieldHasValidCompares(formFieldName, formFieldConfigProps.compareWith!.fieldName, value)
+            : true
+
         const errorMessage = !isValid && shouldLiveCheck
             ? this.getFieldErrorMessage(formFieldName, newValue)
-            : undefined
+            : !hasValidCompare
+                ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
+                : undefined
 
         const isPristine = !(value !== (this.props.formConfig[formFieldName] as FormInputConfigProps).value)
+
+        const comparedFieldState = formFieldConfigProps.compareWith && (errorMessage || isValid)
+            ? this.validateComparedFields(value, formFieldConfigProps.compareWith.fieldName)
+            : {}
 
         this.setState({
             form: {
                 ...this.state.form,
+                ...comparedFieldState,
                 [formFieldName]: {
                     ...this.state.form[formFieldName],
                     value: newValue,
                     isValid,
                     hasError: errorMessage,
                     isPristine
-                }
+                },
             }
         })
     }
@@ -350,7 +410,19 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     onInputBlur(fieldName: string) {
         const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
         const isValid = this.validateField(fieldName, currentValue)
-        const errorMessage = !isValid ? this.getFieldErrorMessage(fieldName, currentValue) : undefined
+        const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
+
+        // isValid and compareWith exists and not comparedWithIsPristine
+        const hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith!.fieldName].isPristine
+            ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith!.fieldName, currentValue)
+            : true
+
+        const errorMessage = !isValid
+            ? this.getFieldErrorMessage(fieldName, currentValue)
+            : !hasValidCompare
+                ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
+                : undefined
+
         const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
 
         this.setState({
@@ -372,7 +444,23 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         const isSingleValueMode = pickerConfig.pickerMode === CustomPickerMode.Single
         const currentPickerState = this.state.form[fieldName] as FormCustomPickerState
 
-        // todo handle isPristine in customPicker
+        const updatedPickerOptions = currentPickerState.options.map(currentStateOption => {
+            if (isSingleValueMode) {
+                return currentStateOption.value === option.value
+                    ? option
+                    : {
+                        ...currentStateOption,
+                        isSelected: false
+                    }
+            }
+
+            return currentStateOption.value === option.value
+                ? option
+                : currentStateOption
+        })
+
+        const comparator = (optionA: CustomPickerOption, optionB: CustomPickerOption) => optionA.value === optionB.value && optionA.isSelected === optionB.isSelected
+        const isPristine = !R.hasElements(R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options))
 
         return this.setState({
             form: {
@@ -380,21 +468,8 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 [fieldName]: {
                     ...currentPickerState,
                     hasError: undefined,
-                    isPristine: false,
-                    options: currentPickerState.options.map(currentStateOption => {
-                        if (isSingleValueMode) {
-                            return currentStateOption.value === option.value
-                                ? option
-                                : {
-                                    ...currentStateOption,
-                                    isSelected: false
-                                }
-                        }
-
-                        return currentStateOption.value === option.value
-                            ? option
-                            : currentStateOption
-                    })
+                    isPristine,
+                    options: updatedPickerOptions
                 }
             }
         })
