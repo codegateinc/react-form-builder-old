@@ -114,7 +114,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    checkValidField(fieldName: string, fieldObject: FieldState, value?: string) {
+    checkFieldValidation(fieldName: string, fieldObject: FieldState, value?: string) {
         if (fieldObject.fieldType === FormField.Input) {
             const fieldProperties = fieldObject as FormInputState
             const isValid = this.validateField(fieldName, fieldProperties.value as string)
@@ -164,22 +164,21 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             .toPairs(this.state.form)
             .filter(([fieldName, fieldObject]) =>
                 fieldObject.isRequired ||
-                (fieldObject.fieldType === FormField.Input && Boolean((fieldObject as FormInputState).value) && Boolean(((this.props.formConfig[fieldName] as FormInputConfigProps).validationRules) || (this.props.formConfig[fieldName] as FormInputConfigProps).compareWith))
+                (fieldObject.fieldType === FormField.Input && Boolean((fieldObject as FormInputState).value) && Boolean((this.props.formConfig[fieldName] as FormInputConfigProps).validationRules))
             )
-            .map(([fieldName, fieldObject]) => this.checkValidField(fieldName, fieldObject))
+            .map(([fieldName, fieldObject]) => this.checkFieldValidation(fieldName, fieldObject))
             .reduce((acc, [fieldName, fieldObject]) => ({
                 ...acc,
                 [fieldName as string]: fieldObject
             }), {})
     }
 
-    checkedFormField(fieldName: string, value?: string) {
-        const formField = this.state.form[fieldName]
-        const [field, fieldObject] = this.checkValidField(fieldName, formField, value)
+    fieldHasValidCompares(fieldName: string, compareWith: string, value?: string) {
+        const formField = this.state.form[compareWith] as FormInputState
+        const [, fieldObject] = this.checkFieldValidation(fieldName, formField, value)
+        const validatedFieldObject = fieldObject as FieldState
 
-        return {
-            [field as string]: fieldObject as FieldState
-        }
+        return !Boolean(validatedFieldObject.hasError)
     }
 
     showErrorsOnSubmit() {
@@ -329,33 +328,74 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         return
     }
 
+    validateComparedFields(valueToCompare: string, compareFieldName: string) {
+        const fieldToCompare = this.state.form[compareFieldName] as FormInputState
+        const compareFieldsConfigProps = this.props.formConfig[compareFieldName] as FormInputConfigProps
+        const shouldLiveCheckCompareWith = Boolean(fieldToCompare.hasError) || !fieldToCompare.isPristine
+        const isValid = this.validateField(compareFieldName, fieldToCompare.value)
+
+        if (!isValid) {
+            return {
+                [compareFieldName]: fieldToCompare
+            }
+        }
+
+        if (valueToCompare === fieldToCompare.value && shouldLiveCheckCompareWith) {
+            return {
+                [compareFieldName]: {
+                    ...fieldToCompare,
+                    hasError: undefined
+                }
+            }
+        }
+
+        const newComparedFiledState = !shouldLiveCheckCompareWith
+            ? {
+                ...fieldToCompare,
+                hasError: undefined
+            } : {
+                ...fieldToCompare,
+                hasError: compareFieldsConfigProps.compareWith && compareFieldsConfigProps.compareWith.errorMessage
+            }
+
+        return {
+            [compareFieldName]: newComparedFiledState
+        }
+    }
+
     onTextChange(value: string, formFieldName: string) {
         const formField = this.state.form[formFieldName] as FormInputState
-        const propsFormField = this.props.formConfig[formFieldName] as FormInputConfigProps
+        const formFieldConfigProps = this.props.formConfig[formFieldName] as FormInputConfigProps
         const shouldLiveCheck = Boolean(formField.hasError) || this.isFormValid
         const valueParser = (this.props.formConfig[formFieldName] as FormInputConfigProps).liveParser
         const newValue = valueParser
             ? valueParser(value)
             : value
 
-        const checkedState = shouldLiveCheck && propsFormField.compareWith
-            ? this.checkedFormField(propsFormField.compareWith.fieldName, value)
-            : {}
-
         const isValid = shouldLiveCheck
             ? this.validateField(formFieldName, newValue)
             : formField.isValid
 
+        const hasValidCompare = isValid && shouldLiveCheck && Boolean(formFieldConfigProps.compareWith)
+            ? this.fieldHasValidCompares(formFieldName, formFieldConfigProps.compareWith!.fieldName, value)
+            : true
+
         const errorMessage = !isValid && shouldLiveCheck
             ? this.getFieldErrorMessage(formFieldName, newValue)
-            : undefined
+            : !hasValidCompare
+                ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
+                : undefined
 
         const isPristine = !(value !== (this.props.formConfig[formFieldName] as FormInputConfigProps).value)
+
+        const comparedFieldState = formFieldConfigProps.compareWith && (errorMessage || isValid)
+            ? this.validateComparedFields(value, formFieldConfigProps.compareWith.fieldName)
+            : {}
 
         this.setState({
             form: {
                 ...this.state.form,
-                ...checkedState,
+                ...comparedFieldState,
                 [formFieldName]: {
                     ...this.state.form[formFieldName],
                     value: newValue,
@@ -370,7 +410,19 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     onInputBlur(fieldName: string) {
         const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
         const isValid = this.validateField(fieldName, currentValue)
-        const errorMessage = !isValid ? this.getFieldErrorMessage(fieldName, currentValue) : undefined
+        const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
+
+        // isValid and compareWith exists and not comparedWithIsPristine
+        const hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith!.fieldName].isPristine
+            ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith!.fieldName, currentValue)
+            : true
+
+        const errorMessage = !isValid
+            ? this.getFieldErrorMessage(fieldName, currentValue)
+            : !hasValidCompare
+                ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
+                : undefined
+
         const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
 
         this.setState({
