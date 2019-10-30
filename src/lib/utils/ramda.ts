@@ -1,4 +1,4 @@
-import { toPairs, cond, is, fromPairs, always, T } from 'ramda'
+import { toPairs, cond, is, fromPairs, always, T, differenceWith } from 'ramda'
 
 /* tslint:disable no-any */
 const isDefined = (subject: any) => typeof subject !== 'undefined' && subject !== null
@@ -20,5 +20,6 @@ export {
     all,
     always,
     T,
-    hasElements
+    hasElements,
+    differenceWith
 }

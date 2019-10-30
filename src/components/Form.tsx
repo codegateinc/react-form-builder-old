@@ -459,23 +459,8 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 : currentStateOption
         })
 
-        const updatedPickerValues = updatedPickerOptions.reduce((acc, updatedOption) => ({
-            ...acc,
-            [updatedOption.value]: updatedOption.isSelected
-        }), {})
-        const pickerConfigValues = pickerConfig.options.reduce((acc, pickerOption) => ({
-            ...acc,
-            [pickerOption.value]: pickerOption.isSelected
-        }), {})
-
-        const isPristine = R.toPairs(updatedPickerValues)
-            .every(([key, value]) => {
-                if (R.isDefined(pickerConfigValues[key])) {
-                    return pickerConfigValues[key] === value
-                }
-
-                return false
-            })
+        const comparator = (x: CustomPickerOption, y: CustomPickerOption) => x.value === y.value && x.isSelected === y.isSelected
+        const isPristine = !R.hasElements(R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options))
 
         return this.setState({
             form: {
