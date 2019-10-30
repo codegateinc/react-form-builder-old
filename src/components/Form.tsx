@@ -459,7 +459,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 : currentStateOption
         })
 
-        const comparator = (x: CustomPickerOption, y: CustomPickerOption) => x.value === y.value && x.isSelected === y.isSelected
+        const comparator = (optionA: CustomPickerOption, optionB: CustomPickerOption) => optionA.value === optionB.value && optionA.isSelected === optionB.isSelected
         const isPristine = !R.hasElements(R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options))
 
         return this.setState({
