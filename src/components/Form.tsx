@@ -42,6 +42,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         }
 
         this.submitForm = this.submitForm.bind(this)
+        this.updateState = this.updateState.bind(this)
         this.renderChild = this.renderChild.bind(this)
         this.handleFormError = this.handleFormError.bind(this)
         this.checkedFormFields = this.checkedFormFields.bind(this)
@@ -88,6 +89,51 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             : true
     }
 
+    get formValues() {
+        return R.toPairs(this.state.form)
+            .reduce((acc, [ fieldName, fieldObject ]) => {
+                if (fieldObject.fieldType === FormField.Input) {
+                    const inputStateProperties = fieldObject as FormInputState
+                    const submitParser = (this.props.formConfig[fieldName] as FormInputConfigProps).submitParser
+
+                    return {
+                        ...acc,
+                        [fieldName] : submitParser
+                            ? submitParser((fieldObject as FormInputState).value)
+                            : inputStateProperties.value
+                    }
+                }
+
+                if (fieldObject.fieldType === FormField.Checkbox) {
+                    return {
+                        ...acc,
+                        [fieldName]: (fieldObject as FormCheckboxState).value
+                    }
+                }
+
+                // CustomPicker
+                return {
+                    ...acc,
+                    [fieldName] : (fieldObject as FormCustomPickerState).options
+                        .filter(option => option.isSelected)
+                        .map(option => option.value)
+                }
+            }, {}) as T
+    }
+
+    updateState(form: FormBuilderState, callBack?: () => void) {
+        this.setState({
+            form
+        }, () => {
+            if (callBack) {
+                callBack()
+            }
+            if(this.props.onFormUpdate) {
+                this.props.onFormUpdate(this.formValues)
+            }
+        })
+    }
+
     hasChanges() {
         return R.toPairs(this.state.form)
             .some(([, fieldObject]) => !fieldObject.isPristine)
@@ -102,15 +148,13 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     }
 
     setCustomFieldError(fieldName: string, errorMessage: string) {
-        this.setState({
-            form: {
-                ...this.state.form,
-                [fieldName]: {
-                    ...this.state.form[fieldName],
-                    hasError: errorMessage,
-                    isValid: false,
-                } as FieldState
-            }
+        this.updateState({
+            ...this.state.form,
+            [fieldName]: {
+                ...this.state.form[fieldName],
+                hasError: errorMessage,
+                isValid: false,
+            } as FieldState
         })
     }
 
@@ -184,11 +228,9 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     showErrorsOnSubmit() {
         const checkedFormFields = this.checkedFormFields()
 
-        this.setState({
-            form: {
-                ...this.state.form,
-                ...checkedFormFields
-            }
+        this.updateState({
+            ...this.state.form,
+            ...checkedFormFields
         }, this.handleFormError)
     }
 
@@ -257,37 +299,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             return this.showErrorsOnSubmit()
         }
 
-        const form = R.toPairs(this.state.form)
-            .reduce((acc, [ fieldName, fieldObject ]) => {
-                if (fieldObject.fieldType === FormField.Input) {
-                    const inputStateProperties = fieldObject as FormInputState
-                    const submitParser = (this.props.formConfig[fieldName] as FormInputConfigProps).submitParser
-
-                    return {
-                        ...acc,
-                        [fieldName] : submitParser
-                            ? submitParser((fieldObject as FormInputState).value)
-                            : inputStateProperties.value
-                    }
-                }
-
-                if (fieldObject.fieldType === FormField.Checkbox) {
-                    return {
-                        ...acc,
-                        [fieldName]: (fieldObject as FormCheckboxState).value
-                    }
-                }
-
-                // CustomPicker
-                return {
-                    ...acc,
-                    [fieldName] : (fieldObject as FormCustomPickerState).options
-                        .filter(option => option.isSelected)
-                        .map(option => option.value)
-                }
-            }, {}) as T
-
-        this.props.onFormSubmit(form)
+        this.props.onFormSubmit(this.formValues)
     }
 
     validateField(formFieldName: string, value: string) {
@@ -392,18 +404,16 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             ? this.validateComparedFields(value, formFieldConfigProps.compareWith.fieldName)
             : {}
 
-        this.setState({
-            form: {
-                ...this.state.form,
-                ...comparedFieldState,
-                [formFieldName]: {
-                    ...this.state.form[formFieldName],
-                    value: newValue,
-                    isValid,
-                    hasError: errorMessage,
-                    isPristine
-                },
-            }
+        this.updateState({
+            ...this.state.form,
+            ...comparedFieldState,
+            [formFieldName]: {
+                ...this.state.form[formFieldName],
+                value: newValue,
+                isValid,
+                hasError: errorMessage,
+                isPristine
+            },
         })
     }
 
@@ -425,17 +435,15 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
 
         const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
 
-        this.setState({
-            form: {
-                ...this.state.form,
-                [fieldName]: {
-                    ...this.state.form[fieldName],
-                    isValid,
-                    hasError: errorMessage,
-                    value: currentValue,
-                    isPristine
-                } as FormInputState
-            }
+        this.updateState({
+            ...this.state.form,
+            [fieldName]: {
+                ...this.state.form[fieldName],
+                isValid,
+                hasError: errorMessage,
+                value: currentValue,
+                isPristine
+            } as FormInputState
         })
     }
 
@@ -462,15 +470,13 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         const comparator = (optionA: CustomPickerOption, optionB: CustomPickerOption) => optionA.value === optionB.value && optionA.isSelected === optionB.isSelected
         const isPristine = !R.hasElements(R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options))
 
-        return this.setState({
-            form: {
-                ...this.state.form,
-                [fieldName]: {
-                    ...currentPickerState,
-                    hasError: undefined,
-                    isPristine,
-                    options: updatedPickerOptions
-                }
+        return this.updateState({
+            ...this.state.form,
+            [fieldName]: {
+                ...currentPickerState,
+                hasError: undefined,
+                isPristine,
+                options: updatedPickerOptions
             }
         })
     }
@@ -478,15 +484,13 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     handleCheckboxChange(fieldName: string) {
         const newValue = !(this.state.form[fieldName] as FormCheckboxState).value
 
-        this.setState({
-            form: {
-                ...this.state.form,
-                [fieldName]: {
-                    ...this.state.form[fieldName],
-                    value: newValue,
-                    isPristine: false,
-                    hasError: this.getCheckboxErrorMessage(fieldName, newValue)
-                }
+        this.updateState({
+            ...this.state.form,
+            [fieldName]: {
+                ...this.state.form[fieldName],
+                value: newValue,
+                isPristine: false,
+                hasError: this.getCheckboxErrorMessage(fieldName, newValue)
             }
         })
     }
