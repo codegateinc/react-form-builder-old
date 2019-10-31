@@ -3,6 +3,7 @@ import { R } from 'lib/utils'
 import { getFormErrors, prepareFormInitialState } from '../utils'
 import {
     CheckboxProps,
+    CustomFieldProps,
     CustomPickerMode,
     CustomPickerOption,
     CustomPickerProps,
@@ -22,6 +23,7 @@ import {
 import { Input } from './Input'
 import { CustomPicker } from './CustomPicker'
 import { Checkbox } from './Checkbox'
+import { CustomField } from './CustomField'
 
 type FormProps<T> = FormBuilderProps<T>
 
@@ -111,6 +113,13 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                     }
                 }
 
+                if (fieldObject.fieldType === FormField.CustomField) {
+                    return {
+                        ...acc,
+                        [fieldName]: (fieldObject as FormCheckboxState).value
+                    }
+                }
+
                 // CustomPicker
                 return {
                     ...acc,
@@ -128,7 +137,8 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             if (callBack) {
                 callBack()
             }
-            if(this.props.onFormUpdate) {
+
+            if (this.props.onFormUpdate) {
                 this.props.onFormUpdate(this.formValues)
             }
         })
@@ -524,6 +534,18 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                     onChange: ({ currentTarget }) => this.onTextChange(currentTarget.value, fieldName),
                     onBlur: () => this.onInputBlur(fieldName)
                 }
+            })
+        }
+
+        if (reactElementChild.type === CustomField) {
+            const fieldName = reactElementChild.props.formFieldName
+
+            return React.cloneElement<CustomFieldProps>(reactElementChild, {
+                ...reactElementChild.props,
+                withError: this.state.form[fieldName].hasError,
+                value: (this.state.form[fieldName] as FormInputState).value,
+                onChange: value => this.onTextChange(value, fieldName),
+                onBlur: () => this.onInputBlur(fieldName)
             })
         }
 
