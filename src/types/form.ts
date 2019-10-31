@@ -23,7 +23,8 @@ export type FormCheckboxValidationRule = {
 export enum FormField {
     Input = 0,
     CustomPicker = 1,
-    Checkbox = 2
+    Checkbox = 2,
+    CustomField = 3
 }
 
 export type InputCompareWith = {
