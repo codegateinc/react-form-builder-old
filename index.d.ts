@@ -101,6 +101,7 @@ type FormBuilderProps<T> = {
     isLoading?: boolean,
     customFormContainerStyles?: React.CSSProperties,
     formConfig: FormConfig,
+    onFormUpdate?(form: T): void,
     onFormSubmit(form: T): void,
     onFormError?(errors: FormErrors): void
 }
