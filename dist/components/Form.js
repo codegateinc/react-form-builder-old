@@ -59,6 +59,7 @@ function (_React$Component) {
     _this.renderChild = _this.renderChild.bind((0, _assertThisInitialized2.default)(_this));
     _this.handleFormError = _this.handleFormError.bind((0, _assertThisInitialized2.default)(_this));
     _this.checkedFormFields = _this.checkedFormFields.bind((0, _assertThisInitialized2.default)(_this));
+    _this.restoreInitialValues = _this.restoreInitialValues.bind((0, _assertThisInitialized2.default)(_this));
     return _this;
   }
 

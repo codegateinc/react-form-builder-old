@@ -48,6 +48,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         this.renderChild = this.renderChild.bind(this)
         this.handleFormError = this.handleFormError.bind(this)
         this.checkedFormFields = this.checkedFormFields.bind(this)
+        this.restoreInitialValues = this.restoreInitialValues.bind(this)
     }
 
     get isFormValid() {
