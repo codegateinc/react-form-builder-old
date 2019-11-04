@@ -11,4 +11,5 @@ exports.FormField = FormField;
   FormField[FormField["Input"] = 0] = "Input";
   FormField[FormField["CustomPicker"] = 1] = "CustomPicker";
   FormField[FormField["Checkbox"] = 2] = "Checkbox";
+  FormField[FormField["CustomField"] = 3] = "CustomField";
 })(FormField || (exports.FormField = FormField = {}));

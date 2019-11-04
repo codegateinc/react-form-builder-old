@@ -27,6 +27,12 @@ Object.defineProperty(exports, "Checkbox", {
     return _Checkbox.Checkbox;
   }
 });
+Object.defineProperty(exports, "CustomField", {
+  enumerable: true,
+  get: function get() {
+    return _CustomField.CustomField;
+  }
+});
 
 var _Input = require("./Input");
 
@@ -35,3 +41,5 @@ var _Form = require("./Form");
 var _CustomPicker = require("./CustomPicker");
 
 var _Checkbox = require("./Checkbox");
+
+var _CustomField = require("./CustomField");
