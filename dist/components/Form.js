@@ -376,7 +376,9 @@ function (_React$Component) {
           var _options = (0, _slicedToArray2.default)(options, 1),
               option = _options[0];
 
-          return currentStateOption.value === option ? option : (0, _objectSpread12.default)({}, currentStateOption, {
+          return currentStateOption.value === option ? (0, _objectSpread12.default)({}, currentStateOption, {
+            isSelected: true
+          }) : (0, _objectSpread12.default)({}, currentStateOption, {
             isSelected: false
           });
         }

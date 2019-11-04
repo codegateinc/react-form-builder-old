@@ -467,8 +467,10 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 const [option] = options
 
                 return currentStateOption.value === option
-                    ? option
-                    : {
+                    ? {
+                        ...currentStateOption,
+                        isSelected: true
+                    } : {
                         ...currentStateOption,
                         isSelected: false
                     }
