@@ -63,6 +63,13 @@ function (_React$Component) {
   }
 
   (0, _createClass2.default)(Form, [{
+    key: "restoreInitialValues",
+    value: function restoreInitialValues() {
+      this.setState({
+        form: (0, _utils2.prepareFormInitialState)(this.props.formConfig)
+      });
+    }
+  }, {
     key: "updateState",
     value: function updateState(form, callBack) {
       var _this2 = this;
