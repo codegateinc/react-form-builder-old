@@ -171,7 +171,7 @@ export const Input: React.FunctionComponent<InputProps> = () => {}
 export const Label: React.FunctionComponent<LabelProps> = () => {}
 export const Checkbox: React.FunctionComponent<CheckboxProps> = () => {}
 export class CustomPicker extends React.Component<CustomPickerProps, CustomPickerState> {}
-export const CustomField: React.FunctionComponent<CustomFieldProps> = () => {}
+export class CustomField extends React.Component<CustomFieldProps> {}
 export class Form<T = {}> extends React.Component<FormBuilderProps<T>, FormBuilderState> {
     submitForm(): T
     setCustomFieldError(fieldName: string, errorMessage: string): void
