@@ -457,14 +457,16 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    handlePickerOptionChange(fieldName: string, option: CustomPickerOption) {
+    handlePickerOptionChange(fieldName: string, options: Array<number>) {
         const pickerConfig = this.props.formConfig[fieldName] as FormCustomPickerConfigProps
         const isSingleValueMode = pickerConfig.pickerMode === CustomPickerMode.Single
         const currentPickerState = this.state.form[fieldName] as FormCustomPickerState
 
         const updatedPickerOptions = currentPickerState.options.map(currentStateOption => {
             if (isSingleValueMode) {
-                return currentStateOption.value === option.value
+                const [option] = options
+
+                return currentStateOption.value === option
                     ? option
                     : {
                         ...currentStateOption,
@@ -472,10 +474,15 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                     }
             }
 
-            return currentStateOption.value === option.value
-                ? option
-                : currentStateOption
-        })
+            return options.includes(Number(currentStateOption.value))
+                ? {
+                    ...currentStateOption,
+                    isSelected: true
+                } : {
+                    ...currentStateOption,
+                    isSelected: false
+                }
+        }) as Array<CustomPickerOption>
 
         const comparator = (optionA: CustomPickerOption, optionB: CustomPickerOption) => optionA.value === optionB.value && optionA.isSelected === optionB.isSelected
         const isPristine = !R.hasElements(R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options))
@@ -557,7 +564,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ...reactElementChild.props,
                 withError: this.state.form[fieldName].hasError,
                 options: pickerState.options,
-                onOptionChange: option => this.handlePickerOptionChange(fieldName, option)
+                onOptionChange: options => this.handlePickerOptionChange(fieldName, options)
             })
         }
 

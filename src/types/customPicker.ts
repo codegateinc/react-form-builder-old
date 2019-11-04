@@ -18,7 +18,7 @@ export type CustomPickerValidationRule = {
 
 export type TogglePickerVisibilityState = (isVisible: boolean) => void
 export type RenderPlaceholderComponent = (selectedOptions: Array<CustomPickerOption>, isPickerVisible: boolean, togglePicker: TogglePickerVisibilityState) => React.ReactNode
-export type OnCustomPickerOptionPress = (option: CustomPickerOption) => void
+export type OnCustomPickerOptionPress = (options: Array<number>) => void
 
 export type CustomPickerState = {
     isPickerVisible: boolean,

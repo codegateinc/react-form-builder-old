@@ -32,7 +32,20 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
                     isRequired: config.isRequired,
                     value: checkboxConfig.value,
                     fieldType: checkboxConfig.fieldType,
-                    isPristine: true,
+                    isPristine: true
+                }]
+            }
+
+            if (config.fieldType === FormField.CustomField) {
+                const customFieldConfig = config as FormInputConfigProps
+                const isValidInputValue = R.is(String, customFieldConfig.value) || R.is(Number, customFieldConfig.value)
+
+                return [fieldName, {
+                    isValid: Boolean(customFieldConfig.value),
+                    isRequired: config.isRequired,
+                    value: isValidInputValue ? customFieldConfig.value : '',
+                    fieldType: customFieldConfig.fieldType,
+                    isPristine: true
                 }]
             }
 
