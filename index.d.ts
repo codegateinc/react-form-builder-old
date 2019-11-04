@@ -138,6 +138,19 @@ type CustomPickerProps = {
     renderPickerComponent(options: Array<CustomPickerOption>, onOptionPress: OnCustomPickerOptionPress, togglePicker: TogglePickerVisibilityState): ReactNode,
 }
 
+type onChangeType = (value: string) => void
+
+export type CustomFieldProps = {
+    formFieldName?: string,
+    onChange?: onChangeType,
+    withError?: string,
+    value?: string,
+    customErrorStyle?: React.CSSProperties,
+    onBlur?(): void,
+    component(value: string, onChange: onChangeType, onBlur: () => void): ReactNode
+}
+
+
 // checkbox
 
 export type RenderCheckboxComponent = (isSelected: boolean) => React.ReactNode
@@ -157,6 +170,7 @@ export const Input: React.FunctionComponent<InputProps> = () => {}
 export const Label: React.FunctionComponent<LabelProps> = () => {}
 export const Checkbox: React.FunctionComponent<CheckboxProps> = () => {}
 export class CustomPicker extends React.Component<CustomPickerProps, CustomPickerState> {}
+export const CustomField: React.FunctionComponent<CustomFieldProps> = () => {}
 export class Form<T = {}> extends React.Component<FormBuilderProps<T>, FormBuilderState> {
     submitForm(): T
     setCustomFieldError(fieldName: string, errorMessage: string): void
