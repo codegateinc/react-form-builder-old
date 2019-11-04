@@ -457,7 +457,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    handlePickerOptionChange(fieldName: string, options: Array<number>) {
+    handlePickerOptionChange(fieldName: string, options: Array<number | string>) {
         const pickerConfig = this.props.formConfig[fieldName] as FormCustomPickerConfigProps
         const isSingleValueMode = pickerConfig.pickerMode === CustomPickerMode.Single
         const currentPickerState = this.state.form[fieldName] as FormCustomPickerState

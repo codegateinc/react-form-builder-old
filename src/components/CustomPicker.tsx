@@ -24,7 +24,7 @@ export class CustomPicker extends React.Component<CustomPickerProps, CustomPicke
         })
     }
 
-    onOptionPress(options: Array<number>) {
+    onOptionPress(options: Array<number | string>) {
         if (this.props.onOptionChange) {
             this.props.onOptionChange(options)
         }
