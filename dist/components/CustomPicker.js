@@ -9,8 +9,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CustomPicker = void 0;
 
-var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -60,11 +58,9 @@ function (_React$Component) {
     }
   }, {
     key: "onOptionPress",
-    value: function onOptionPress(option) {
+    value: function onOptionPress(options) {
       if (this.props.onOptionChange) {
-        this.props.onOptionChange((0, _objectSpread2.default)({}, option, {
-          isSelected: !Boolean(option.isSelected)
-        }));
+        this.props.onOptionChange(options);
       }
     }
   }, {

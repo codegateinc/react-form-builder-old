@@ -45,6 +45,20 @@ var prepareFormInitialState = function prepareFormInitialState(formConfig) {
         fieldType: checkboxConfig.fieldType,
         isPristine: true
       }];
+    }
+
+    if (config.fieldType === _types.FormField.CustomField) {
+      var customFieldConfig = config;
+
+      var _isValidInputValue = _utils.R.is(String, customFieldConfig.value) || _utils.R.is(Number, customFieldConfig.value);
+
+      return [fieldName, {
+        isValid: Boolean(customFieldConfig.value),
+        isRequired: config.isRequired,
+        value: _isValidInputValue ? customFieldConfig.value : '',
+        fieldType: customFieldConfig.fieldType,
+        isPristine: true
+      }];
     } // CustomPicker
 
 

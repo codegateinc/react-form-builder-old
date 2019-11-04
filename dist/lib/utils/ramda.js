@@ -39,7 +39,13 @@ Object.defineProperty(exports, "T", {
     return _ramda.T;
   }
 });
-exports.all = exports.isDefined = exports.isEqual = void 0;
+Object.defineProperty(exports, "differenceWith", {
+  enumerable: true,
+  get: function get() {
+    return _ramda.differenceWith;
+  }
+});
+exports.hasElements = exports.all = exports.isDefined = exports.isEqual = void 0;
 
 var _ramda = require("ramda");
 
@@ -59,6 +65,12 @@ var isEqual = function isEqual(comparator, followingValue) {
 
 
 exports.isEqual = isEqual;
+
+var hasElements = function hasElements(array) {
+  return Array.isArray(array) && array.length > 0;
+};
+
+exports.hasElements = hasElements;
 
 var all = function all() {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {

@@ -75,3 +75,15 @@ Object.keys(_checkbox).forEach(function (key) {
     }
   });
 });
+
+var _customFieldProps = require("./customFieldProps");
+
+Object.keys(_customFieldProps).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _customFieldProps[key];
+    }
+  });
+});

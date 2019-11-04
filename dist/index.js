@@ -10,6 +10,7 @@ var _exportNames = {
   Input: true,
   Checkbox: true,
   CustomPicker: true,
+  CustomField: true,
   Types: true
 };
 Object.defineProperty(exports, "Form", {
@@ -34,6 +35,12 @@ Object.defineProperty(exports, "CustomPicker", {
   enumerable: true,
   get: function get() {
     return _components.CustomPicker;
+  }
+});
+Object.defineProperty(exports, "CustomField", {
+  enumerable: true,
+  get: function get() {
+    return _components.CustomField;
   }
 });
 exports.Types = void 0;
