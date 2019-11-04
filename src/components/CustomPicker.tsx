@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { CustomPickerOption, CustomPickerProps, CustomPickerState } from '../types'
+import { CustomPickerProps, CustomPickerState } from '../types'
 import { ErrorMessage } from './ErrorMessage'
 
 export class CustomPicker extends React.Component<CustomPickerProps, CustomPickerState> {
@@ -24,12 +24,9 @@ export class CustomPicker extends React.Component<CustomPickerProps, CustomPicke
         })
     }
 
-    onOptionPress(option: CustomPickerOption) {
+    onOptionPress(options: Array<number | string>) {
         if (this.props.onOptionChange) {
-            this.props.onOptionChange({
-                ...option,
-                isSelected: !Boolean(option.isSelected)
-            })
+            this.props.onOptionChange(options)
         }
     }
 

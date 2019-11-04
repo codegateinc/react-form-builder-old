@@ -1,4 +1,4 @@
-import { Form, Input, Checkbox, CustomPicker } from './components'
+import { Form, Input, Checkbox, CustomPicker, CustomField } from './components'
 import * as Types from './types'
 
 export * from './types'
@@ -7,5 +7,6 @@ export {
     Input,
     CustomPicker,
     Checkbox,
-    Types
+    Types,
+    CustomField
 }
