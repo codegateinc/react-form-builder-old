@@ -125,7 +125,7 @@ type CustomPickerState = {
     isPickerVisible: boolean,
 }
 
-export type OnCustomPickerOptionPress = (option: CustomPickerOption) => void
+export type OnCustomPickerOptionPress = (options: Array<number | string>) => void
 
 type CustomPickerProps = {
     withError?: string,
