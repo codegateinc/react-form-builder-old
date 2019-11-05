@@ -132,9 +132,9 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     }
 
     restoreInitialValues() {
-        this.setState({
+        return this.setState({
             form: prepareFormInitialState(this.props.formConfig)
-        })
+        }, () => this.formValues)
     }
 
     updateState(form: FormBuilderState, callBack?: () => void) {
