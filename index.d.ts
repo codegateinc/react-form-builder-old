@@ -176,5 +176,5 @@ export class Form<T = {}> extends React.Component<FormBuilderProps<T>, FormBuild
     submitForm(): T
     setCustomFieldError(fieldName: string, errorMessage: string): void
     hasChanges(): boolean
-    restoreInitialValues(): void
+    restoreInitialValues(): T
 }
