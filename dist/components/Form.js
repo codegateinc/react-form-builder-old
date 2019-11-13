@@ -9,6 +9,8 @@ exports.Form = void 0;
 
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -69,29 +71,36 @@ function (_React$Component) {
   (0, _createClass2.default)(Form, [{
     key: "restoreInitialValues",
     value: function restoreInitialValues() {
-      var _this2 = this;
+      return _regenerator.default.async(function restoreInitialValues$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _regenerator.default.awrap(this.setState({
+                form: (0, _utils2.prepareFormInitialState)(this.props.formConfig)
+              }));
 
-      return this.setState({
-        form: (0, _utils2.prepareFormInitialState)(this.props.formConfig)
-      }, function () {
-        return _this2.formValues;
-      });
+            case 2:
+              return _context.abrupt("return", this.formValues);
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, null, this);
     }
   }, {
     key: "clearValues",
     value: function clearValues() {
-      var _this3 = this;
-
-      return this.setState({
+      this.setState({
         form: (0, _utils2.clearFormState)(this.props.formConfig)
-      }, function () {
-        return _this3.formValues;
       });
     }
   }, {
     key: "updateState",
     value: function updateState(form, callBack) {
-      var _this4 = this;
+      var _this2 = this;
 
       this.setState({
         form: form
@@ -100,8 +109,8 @@ function (_React$Component) {
           callBack();
         }
 
-        if (_this4.props.onFormUpdate) {
-          _this4.props.onFormUpdate(_this4.formValues);
+        if (_this2.props.onFormUpdate) {
+          _this2.props.onFormUpdate(_this2.formValues);
         }
       });
     }
@@ -134,7 +143,7 @@ function (_React$Component) {
   }, {
     key: "checkFieldValidation",
     value: function checkFieldValidation(fieldName, fieldObject, value) {
-      var _this5 = this;
+      var _this3 = this;
 
       if (fieldObject.fieldType === _types.FormField.Input) {
         var fieldProperties = fieldObject;
@@ -145,11 +154,11 @@ function (_React$Component) {
         var hasError = _utils.R.cond([[function () {
           return !isValid;
         }, function () {
-          return _this5.getFieldErrorMessage(fieldName, fieldProperties.value);
+          return _this3.getFieldErrorMessage(fieldName, fieldProperties.value);
         }], [function () {
           return Boolean(compareWith);
         }, function () {
-          return fieldProperties.value !== (value || _this5.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
+          return fieldProperties.value !== (value || _this3.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
         }], [_utils.R.T, _utils.R.always(undefined)]])();
 
         return [fieldName, _objectSpread({}, fieldObject, {
@@ -172,20 +181,20 @@ function (_React$Component) {
   }, {
     key: "checkedFormFields",
     value: function checkedFormFields() {
-      var _this6 = this;
+      var _this4 = this;
 
       return _utils.R.toPairs(this.state.form).filter(function (_ref4) {
         var _ref5 = (0, _slicedToArray2.default)(_ref4, 2),
             fieldName = _ref5[0],
             fieldObject = _ref5[1];
 
-        return fieldObject.isRequired || fieldObject.fieldType === _types.FormField.Input && Boolean(fieldObject.value) && Boolean(_this6.props.formConfig[fieldName].validationRules);
+        return fieldObject.isRequired || fieldObject.fieldType === _types.FormField.Input && Boolean(fieldObject.value) && Boolean(_this4.props.formConfig[fieldName].validationRules);
       }).map(function (_ref6) {
         var _ref7 = (0, _slicedToArray2.default)(_ref6, 2),
             fieldName = _ref7[0],
             fieldObject = _ref7[1];
 
-        return _this6.checkFieldValidation(fieldName, fieldObject);
+        return _this4.checkFieldValidation(fieldName, fieldObject);
       }).reduce(function (acc, _ref8) {
         var _ref9 = (0, _slicedToArray2.default)(_ref8, 2),
             fieldName = _ref9[0],
@@ -440,7 +449,7 @@ function (_React$Component) {
   }, {
     key: "renderChild",
     value: function renderChild(child) {
-      var _this7 = this;
+      var _this5 = this;
 
       if (_utils.R.is(String, child) || _utils.R.is(Number, child) || child === null) {
         return child;
@@ -466,10 +475,10 @@ function (_React$Component) {
             value: this.state.form[fieldName].value,
             onChange: function onChange(_ref17) {
               var currentTarget = _ref17.currentTarget;
-              return _this7.onTextChange(currentTarget.value, fieldName);
+              return _this5.onTextChange(currentTarget.value, fieldName);
             },
             onBlur: function onBlur() {
-              return _this7.onInputBlur(fieldName);
+              return _this5.onInputBlur(fieldName);
             }
           })
         }));
@@ -481,10 +490,10 @@ function (_React$Component) {
           withError: this.state.form[_fieldName].hasError,
           value: this.state.form[_fieldName].value,
           onChange: function onChange(value) {
-            return _this7.onTextChange(value, _fieldName);
+            return _this5.onTextChange(value, _fieldName);
           },
           onBlur: function onBlur() {
-            return _this7.onInputBlur(_fieldName);
+            return _this5.onInputBlur(_fieldName);
           }
         }));
       }
@@ -496,7 +505,7 @@ function (_React$Component) {
           withError: this.state.form[_fieldName2].hasError,
           options: pickerState.options,
           onOptionChange: function onOptionChange(options) {
-            return _this7.handlePickerOptionChange(_fieldName2, options);
+            return _this5.handlePickerOptionChange(_fieldName2, options);
           }
         }));
       }
@@ -507,7 +516,7 @@ function (_React$Component) {
           withError: this.state.form[_fieldName3].hasError,
           isSelected: this.state.form[_fieldName3].value,
           onClick: function onClick() {
-            return _this7.handleCheckboxChange(_fieldName3);
+            return _this5.handleCheckboxChange(_fieldName3);
           }
         }));
       }
@@ -543,7 +552,7 @@ function (_React$Component) {
   }, {
     key: "isFormValid",
     get: function get() {
-      var _this8 = this;
+      var _this6 = this;
 
       var areInputsValid = _utils.R.toPairs(this.state.form).filter(function (_ref18) {
         var _ref19 = (0, _slicedToArray2.default)(_ref18, 2),
@@ -555,7 +564,7 @@ function (_React$Component) {
             fieldName = _ref21[0],
             fieldObject = _ref21[1];
 
-        return _this8.validateField(fieldName, fieldObject.value);
+        return _this6.validateField(fieldName, fieldObject.value);
       }).every(Boolean);
 
       var areCustomPickersValid = _utils.R.toPairs(this.state.form).filter(function (_ref22) {
@@ -567,7 +576,7 @@ function (_React$Component) {
         var _ref25 = (0, _slicedToArray2.default)(_ref24, 1),
             fieldName = _ref25[0];
 
-        return _this8.validateCustomPicker(fieldName);
+        return _this6.validateCustomPicker(fieldName);
       }).every(Boolean);
 
       var areCheckboxesValid = _utils.R.toPairs(this.state.form).filter(function (_ref26) {
@@ -579,7 +588,7 @@ function (_React$Component) {
         var _ref29 = (0, _slicedToArray2.default)(_ref28, 1),
             fieldName = _ref29[0];
 
-        return _this8.validateCheckbox(fieldName);
+        return _this6.validateCheckbox(fieldName);
       }).every(Boolean);
 
       return _utils.R.all(areInputsValid, areCustomPickersValid, areCheckboxesValid, !this.props.isLoading);
@@ -587,14 +596,14 @@ function (_React$Component) {
   }, {
     key: "hasValidCompares",
     get: function get() {
-      var _this9 = this;
+      var _this7 = this;
 
       var inputsToCompare = _utils.R.toPairs(this.state.form).filter(function (_ref30) {
         var _ref31 = (0, _slicedToArray2.default)(_ref30, 2),
             fieldName = _ref31[0],
             fieldObject = _ref31[1];
 
-        return fieldObject.fieldType === _types.FormField.Input && Boolean(_this9.props.formConfig[fieldName].compareWith);
+        return fieldObject.fieldType === _types.FormField.Input && Boolean(_this7.props.formConfig[fieldName].compareWith);
       });
 
       return inputsToCompare.length ? inputsToCompare.map(function (_ref32) {
@@ -602,14 +611,14 @@ function (_React$Component) {
             fieldName = _ref33[0],
             fieldObject = _ref33[1];
 
-        var fieldToCompare = _this9.props.formConfig[fieldName].compareWith.fieldName;
-        return fieldObject.value === _this9.state.form[fieldToCompare].value;
+        var fieldToCompare = _this7.props.formConfig[fieldName].compareWith.fieldName;
+        return fieldObject.value === _this7.state.form[fieldToCompare].value;
       }).every(Boolean) : true;
     }
   }, {
     key: "formValues",
     get: function get() {
-      var _this10 = this;
+      var _this8 = this;
 
       return _utils.R.toPairs(this.state.form).reduce(function (acc, _ref34) {
         var _ref35 = (0, _slicedToArray2.default)(_ref34, 2),
@@ -618,7 +627,7 @@ function (_React$Component) {
 
         if (fieldObject.fieldType === _types.FormField.Input) {
           var inputStateProperties = fieldObject;
-          var submitParser = _this10.props.formConfig[fieldName].submitParser;
+          var submitParser = _this8.props.formConfig[fieldName].submitParser;
           return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, submitParser ? submitParser(fieldObject.value) : inputStateProperties.value));
         }
 
