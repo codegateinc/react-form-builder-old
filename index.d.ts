@@ -16,6 +16,10 @@ export type FormErrors = {
     [key: string]: string | number
 }
 
+export type CustomValue = {
+    [key: string]: any
+}
+
 export type FormFieldValidationRule = {
     errorMessage: string
     validationFunction(text: string): boolean,
@@ -177,5 +181,7 @@ export class Form<T = {}> extends React.Component<FormBuilderProps<T>, FormBuild
     setCustomFieldError(fieldName: string, errorMessage: string): void
     hasChanges(): boolean
     restoreInitialValues(): T
+    clearValues(): T
     formValues: T
+    setCustomValues(values: CustomValue): void
 }

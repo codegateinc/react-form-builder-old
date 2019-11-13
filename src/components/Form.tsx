@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { R } from 'lib/utils'
-import { getFormErrors, prepareFormInitialState } from '../utils'
+import { getFormErrors, prepareFormInitialState, clearFormState } from '../utils'
 import {
     CheckboxProps,
     CustomFieldProps,
@@ -134,6 +134,12 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     restoreInitialValues() {
         return this.setState({
             form: prepareFormInitialState(this.props.formConfig)
+        }, () => this.formValues)
+    }
+
+    clearValues() {
+        return this.setState({
+            form: clearFormState(this.props.formConfig)
         }, () => this.formValues)
     }
 
