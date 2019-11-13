@@ -127,9 +127,18 @@ var clearFormState = function clearFormState(formConfig) {
     return [fieldName, {
       fieldType: customPickerConfig.fieldType,
       isRequired: customPickerConfig.isRequired,
-      options: customPickerConfig.options,
-      isPristine: true,
-      value: ''
+      options: customPickerConfig.options.map(function (option, index) {
+        if (index === 1) {
+          return _objectSpread({}, option, {
+            isSelected: true
+          });
+        }
+
+        return _objectSpread({}, option, {
+          isSelected: false
+        });
+      }),
+      isPristine: true
     }];
   });
 

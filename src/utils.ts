@@ -109,9 +109,20 @@ export const clearFormState = (formConfig: FormConfig) => {
             return [fieldName, {
                 fieldType: customPickerConfig.fieldType,
                 isRequired: customPickerConfig.isRequired,
-                options: customPickerConfig.options,
-                isPristine: true,
-                value: ''
+                options: customPickerConfig.options.map((option, index) => {
+                    if (index === 1) {
+                        return {
+                            ...option,
+                            isSelected: true
+                        }
+                    }
+
+                    return {
+                        ...option,
+                        isSelected: false
+                    }
+                }),
+                isPristine: true
             }]
         }) as Array<[string, FieldState]>
 
