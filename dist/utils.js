@@ -128,7 +128,7 @@ var clearFormState = function clearFormState(formConfig) {
       fieldType: customPickerConfig.fieldType,
       isRequired: customPickerConfig.isRequired,
       options: customPickerConfig.options.map(function (option, index) {
-        if (index === 1) {
+        if (index === 0) {
           return _objectSpread({}, option, {
             isSelected: true
           });

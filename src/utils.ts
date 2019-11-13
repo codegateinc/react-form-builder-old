@@ -110,7 +110,7 @@ export const clearFormState = (formConfig: FormConfig) => {
                 fieldType: customPickerConfig.fieldType,
                 isRequired: customPickerConfig.isRequired,
                 options: customPickerConfig.options.map((option, index) => {
-                    if (index === 1) {
+                    if (index === 0) {
                         return {
                             ...option,
                             isSelected: true
