@@ -7,8 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Form = void 0;
 
-var _objectSpread12 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
-
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
@@ -41,6 +39,10 @@ var _Checkbox = require("./Checkbox");
 
 var _CustomField = require("./CustomField");
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 var Form =
 /*#__PURE__*/
 function (_React$Component) {
@@ -55,6 +57,7 @@ function (_React$Component) {
       form: (0, _utils2.prepareFormInitialState)(_this.props.formConfig)
     };
     _this.submitForm = _this.submitForm.bind((0, _assertThisInitialized2.default)(_this));
+    _this.clearValues = _this.clearValues.bind((0, _assertThisInitialized2.default)(_this));
     _this.updateState = _this.updateState.bind((0, _assertThisInitialized2.default)(_this));
     _this.renderChild = _this.renderChild.bind((0, _assertThisInitialized2.default)(_this));
     _this.handleFormError = _this.handleFormError.bind((0, _assertThisInitialized2.default)(_this));
@@ -123,7 +126,7 @@ function (_React$Component) {
   }, {
     key: "setCustomFieldError",
     value: function setCustomFieldError(fieldName, errorMessage) {
-      this.updateState((0, _objectSpread12.default)({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, (0, _objectSpread12.default)({}, this.state.form[fieldName], {
+      this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         hasError: errorMessage,
         isValid: false
       }))));
@@ -149,20 +152,20 @@ function (_React$Component) {
           return fieldProperties.value !== (value || _this5.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
         }], [_utils.R.T, _utils.R.always(undefined)]])();
 
-        return [fieldName, (0, _objectSpread12.default)({}, fieldObject, {
+        return [fieldName, _objectSpread({}, fieldObject, {
           isValid: isValid,
           hasError: hasError
         })];
       }
 
       if (fieldObject.fieldType === _types.FormField.Checkbox) {
-        return [fieldName, (0, _objectSpread12.default)({}, fieldObject, {
+        return [fieldName, _objectSpread({}, fieldObject, {
           hasError: this.getCheckboxErrorMessage(fieldName, fieldObject.value)
         })];
       } // CustomPicker
 
 
-      return [fieldName, (0, _objectSpread12.default)({}, fieldObject, {
+      return [fieldName, _objectSpread({}, fieldObject, {
         hasError: this.getCustomPickerErrorMessage(fieldName)
       })];
     }
@@ -188,7 +191,7 @@ function (_React$Component) {
             fieldName = _ref9[0],
             fieldObject = _ref9[1];
 
-        return (0, _objectSpread12.default)({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject));
+        return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject));
       }, {});
     }
   }, {
@@ -207,7 +210,7 @@ function (_React$Component) {
     key: "showErrorsOnSubmit",
     value: function showErrorsOnSubmit() {
       var checkedFormFields = this.checkedFormFields();
-      this.updateState((0, _objectSpread12.default)({}, this.state.form, checkedFormFields), this.handleFormError);
+      this.updateState(_objectSpread({}, this.state.form, {}, checkedFormFields), this.handleFormError);
     }
   }, {
     key: "getCustomPickerErrorMessage",
@@ -339,14 +342,14 @@ function (_React$Component) {
       }
 
       if (valueToCompare === fieldToCompare.value && shouldLiveCheckCompareWith) {
-        return (0, _defineProperty2.default)({}, compareFieldName, (0, _objectSpread12.default)({}, fieldToCompare, {
+        return (0, _defineProperty2.default)({}, compareFieldName, _objectSpread({}, fieldToCompare, {
           hasError: undefined
         }));
       }
 
-      var newComparedFiledState = !shouldLiveCheckCompareWith ? (0, _objectSpread12.default)({}, fieldToCompare, {
+      var newComparedFiledState = !shouldLiveCheckCompareWith ? _objectSpread({}, fieldToCompare, {
         hasError: undefined
-      }) : (0, _objectSpread12.default)({}, fieldToCompare, {
+      }) : _objectSpread({}, fieldToCompare, {
         hasError: compareFieldsConfigProps.compareWith && compareFieldsConfigProps.compareWith.errorMessage
       });
       return (0, _defineProperty2.default)({}, compareFieldName, newComparedFiledState);
@@ -364,7 +367,7 @@ function (_React$Component) {
       var errorMessage = !isValid && shouldLiveCheck ? this.getFieldErrorMessage(formFieldName, newValue) : !hasValidCompare ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage : undefined;
       var isPristine = !(value !== this.props.formConfig[formFieldName].value);
       var comparedFieldState = formFieldConfigProps.compareWith && (errorMessage || isValid) ? this.validateComparedFields(value, formFieldConfigProps.compareWith.fieldName) : {};
-      this.updateState((0, _objectSpread12.default)({}, this.state.form, comparedFieldState, (0, _defineProperty2.default)({}, formFieldName, (0, _objectSpread12.default)({}, this.state.form[formFieldName], {
+      this.updateState(_objectSpread({}, this.state.form, {}, comparedFieldState, (0, _defineProperty2.default)({}, formFieldName, _objectSpread({}, this.state.form[formFieldName], {
         value: newValue,
         isValid: isValid,
         hasError: errorMessage,
@@ -381,7 +384,7 @@ function (_React$Component) {
       var hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith.fieldName].isPristine ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith.fieldName, currentValue) : true;
       var errorMessage = !isValid ? this.getFieldErrorMessage(fieldName, currentValue) : !hasValidCompare ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage : undefined;
       var isPristine = !(currentValue !== this.props.formConfig[fieldName].value);
-      this.updateState((0, _objectSpread12.default)({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, (0, _objectSpread12.default)({}, this.state.form[fieldName], {
+      this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         isValid: isValid,
         hasError: errorMessage,
         value: currentValue,
@@ -399,16 +402,16 @@ function (_React$Component) {
           var _options = (0, _slicedToArray2.default)(options, 1),
               option = _options[0];
 
-          return currentStateOption.value === option ? (0, _objectSpread12.default)({}, currentStateOption, {
+          return currentStateOption.value === option ? _objectSpread({}, currentStateOption, {
             isSelected: true
-          }) : (0, _objectSpread12.default)({}, currentStateOption, {
+          }) : _objectSpread({}, currentStateOption, {
             isSelected: false
           });
         }
 
-        return options.includes(Number(currentStateOption.value)) ? (0, _objectSpread12.default)({}, currentStateOption, {
+        return options.includes(Number(currentStateOption.value)) ? _objectSpread({}, currentStateOption, {
           isSelected: true
-        }) : (0, _objectSpread12.default)({}, currentStateOption, {
+        }) : _objectSpread({}, currentStateOption, {
           isSelected: false
         });
       });
@@ -418,7 +421,7 @@ function (_React$Component) {
       };
 
       var isPristine = !_utils.R.hasElements(_utils.R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options));
-      return this.updateState((0, _objectSpread12.default)({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, (0, _objectSpread12.default)({}, currentPickerState, {
+      return this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, currentPickerState, {
         hasError: undefined,
         isPristine: isPristine,
         options: updatedPickerOptions
@@ -428,7 +431,7 @@ function (_React$Component) {
     key: "handleCheckboxChange",
     value: function handleCheckboxChange(fieldName) {
       var newValue = !this.state.form[fieldName].value;
-      this.updateState((0, _objectSpread12.default)({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, (0, _objectSpread12.default)({}, this.state.form[fieldName], {
+      this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         value: newValue,
         isPristine: false,
         hasError: this.getCheckboxErrorMessage(fieldName, newValue)
@@ -454,12 +457,12 @@ function (_React$Component) {
         var inputProps = reactElementChild.props.inputProps;
         var customInputStyles = inputProps && inputProps.style ? inputProps.style : {};
         var formConfigStyles = configProps.inputProps && configProps.inputProps.style ? configProps.inputProps.style : {};
-        return _react.default.cloneElement(reactElementChild, (0, _objectSpread12.default)({}, reactElementChild.props, {
+        return _react.default.cloneElement(reactElementChild, _objectSpread({}, reactElementChild.props, {
           withError: this.state.form[fieldName].hasError,
-          inputProps: (0, _objectSpread12.default)({
+          inputProps: _objectSpread({
             disabled: Boolean(isLoading)
           }, configProps.inputProps, {
-            style: (0, _objectSpread12.default)({}, formConfigStyles, customInputStyles),
+            style: _objectSpread({}, formConfigStyles, {}, customInputStyles),
             value: this.state.form[fieldName].value,
             onChange: function onChange(_ref17) {
               var currentTarget = _ref17.currentTarget;
@@ -474,7 +477,7 @@ function (_React$Component) {
 
       if (reactElementChild.type === _CustomField.CustomField) {
         var _fieldName = reactElementChild.props.formFieldName;
-        return _react.default.cloneElement(reactElementChild, (0, _objectSpread12.default)({}, reactElementChild.props, {
+        return _react.default.cloneElement(reactElementChild, _objectSpread({}, reactElementChild.props, {
           withError: this.state.form[_fieldName].hasError,
           value: this.state.form[_fieldName].value,
           onChange: function onChange(value) {
@@ -489,7 +492,7 @@ function (_React$Component) {
       if (reactElementChild.type === _CustomPicker.CustomPicker) {
         var _fieldName2 = reactElementChild.props.formFieldName;
         var pickerState = this.state.form[_fieldName2];
-        return _react.default.cloneElement(reactElementChild, (0, _objectSpread12.default)({}, reactElementChild.props, {
+        return _react.default.cloneElement(reactElementChild, _objectSpread({}, reactElementChild.props, {
           withError: this.state.form[_fieldName2].hasError,
           options: pickerState.options,
           onOptionChange: function onOptionChange(options) {
@@ -500,7 +503,7 @@ function (_React$Component) {
 
       if (reactElementChild.type === _Checkbox.Checkbox) {
         var _fieldName3 = reactElementChild.props.formFieldName;
-        return _react.default.cloneElement(reactElementChild, (0, _objectSpread12.default)({}, reactElementChild.props, {
+        return _react.default.cloneElement(reactElementChild, _objectSpread({}, reactElementChild.props, {
           withError: this.state.form[_fieldName3].hasError,
           isSelected: this.state.form[_fieldName3].value,
           onClick: function onClick() {
@@ -534,7 +537,7 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return _react.default.createElement("div", {
-        style: (0, _objectSpread12.default)({}, styles.container, this.props.customFormContainerStyles)
+        style: _objectSpread({}, styles.container, {}, this.props.customFormContainerStyles)
       }, this.renderForm());
     }
   }, {
@@ -616,19 +619,19 @@ function (_React$Component) {
         if (fieldObject.fieldType === _types.FormField.Input) {
           var inputStateProperties = fieldObject;
           var submitParser = _this10.props.formConfig[fieldName].submitParser;
-          return (0, _objectSpread12.default)({}, acc, (0, _defineProperty2.default)({}, fieldName, submitParser ? submitParser(fieldObject.value) : inputStateProperties.value));
+          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, submitParser ? submitParser(fieldObject.value) : inputStateProperties.value));
         }
 
         if (fieldObject.fieldType === _types.FormField.Checkbox) {
-          return (0, _objectSpread12.default)({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.value));
+          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.value));
         }
 
         if (fieldObject.fieldType === _types.FormField.CustomField) {
-          return (0, _objectSpread12.default)({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.value));
+          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.value));
         } // CustomPicker
 
 
-        return (0, _objectSpread12.default)({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.options.filter(function (option) {
+        return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.options.filter(function (option) {
           return option.isSelected;
         }).map(function (option) {
           return option.value;

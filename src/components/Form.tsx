@@ -44,6 +44,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         }
 
         this.submitForm = this.submitForm.bind(this)
+        this.clearValues = this.clearValues.bind(this)
         this.updateState = this.updateState.bind(this)
         this.renderChild = this.renderChild.bind(this)
         this.handleFormError = this.handleFormError.bind(this)

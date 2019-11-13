@@ -9,13 +9,15 @@ exports.getFormErrors = exports.clearFormState = exports.prepareFormInitialState
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-var _objectSpread3 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
-
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
 var _utils = require("./lib/utils");
 
 var _types = require("./types");
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var prepareFormInitialState = function prepareFormInitialState(formConfig) {
   var preparedPairs = _utils.R.toPairs(formConfig).map(function (_ref) {
@@ -147,7 +149,7 @@ var getFormErrors = function getFormErrors(formState) {
         fieldName = _ref8[0],
         fieldState = _ref8[1];
 
-    return (0, _objectSpread3.default)({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldState.hasError));
+    return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldState.hasError));
   }, {});
 };
 

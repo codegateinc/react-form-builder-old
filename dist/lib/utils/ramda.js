@@ -49,7 +49,6 @@ exports.hasElements = exports.all = exports.isDefined = exports.isEqual = void 0
 
 var _ramda = require("ramda");
 
-/* tslint:disable no-any */
 var isDefined = function isDefined(subject) {
   return typeof subject !== 'undefined' && subject !== null;
 };
