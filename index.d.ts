@@ -183,5 +183,4 @@ export class Form<T = {}> extends React.Component<FormBuilderProps<T>, FormBuild
     restoreInitialValues(): void
     clearValues(): void
     formValues: T
-    setCustomValues(values: CustomValue): void
 }
