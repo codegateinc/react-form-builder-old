@@ -180,8 +180,8 @@ export class Form<T = {}> extends React.Component<FormBuilderProps<T>, FormBuild
     submitForm(): T
     setCustomFieldError(fieldName: string, errorMessage: string): void
     hasChanges(): boolean
-    restoreInitialValues(): T
-    clearValues(): T
+    restoreInitialValues(): void
+    clearValues(): void
     formValues: T
     setCustomValues(values: CustomValue): void
 }
