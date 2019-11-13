@@ -132,17 +132,23 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             }, {}) as T
     }
 
-    async restoreInitialValues() {
-        await this.setState({
+    restoreInitialValues() {
+        this.setState({
             form: prepareFormInitialState(this.props.formConfig)
+        }, () => {
+            if (this.props.onFormUpdate) {
+                this.props.onFormUpdate(this.formValues)
+            }
         })
-
-        return this.formValues
     }
 
     clearValues() {
         this.setState({
             form: clearFormState(this.props.formConfig)
+        }, () => {
+            if (this.props.onFormUpdate) {
+                this.props.onFormUpdate(this.formValues)
+            }
         })
     }
 
