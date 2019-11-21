@@ -1,4 +1,6 @@
 import React, { ReactNode } from 'react'
+import { Subject } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 import { R } from 'lib/utils'
 import { getFormErrors, prepareFormInitialState, clearFormState } from '../utils'
 import {
@@ -36,6 +38,8 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         customFormContainerStyles: {}
     }
 
+    private filtersStream: Subject<T> = new Subject()
+
     constructor(props: FormProps<T>) {
         super(props)
 
@@ -50,6 +54,20 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         this.handleFormError = this.handleFormError.bind(this)
         this.checkedFormFields = this.checkedFormFields.bind(this)
         this.restoreInitialValues = this.restoreInitialValues.bind(this)
+    }
+
+    componentDidMount() {
+        this.filtersStream
+            .pipe(debounceTime(this.props.debounceTime || 0))
+            .subscribe(() => {
+                if (this.props.onFormUpdate) {
+                    this.props.onFormUpdate(this.formValues)
+                }
+            })
+    }
+
+    componentWillUnmount() {
+        this.filtersStream.unsubscribe()
     }
 
     get isFormValid() {
@@ -135,21 +153,13 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     restoreInitialValues() {
         this.setState({
             form: prepareFormInitialState(this.props.formConfig)
-        }, () => {
-            if (this.props.onFormUpdate) {
-                this.props.onFormUpdate(this.formValues)
-            }
-        })
+        }, this.filtersStream.next)
     }
 
     clearValues() {
         this.setState({
             form: clearFormState(this.props.formConfig)
-        }, () => {
-            if (this.props.onFormUpdate) {
-                this.props.onFormUpdate(this.formValues)
-            }
-        })
+        }, this.filtersStream.next)
     }
 
     updateState(form: FormBuilderState, callBack?: () => void) {
@@ -160,9 +170,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 callBack()
             }
 
-            if (this.props.onFormUpdate) {
-                this.props.onFormUpdate(this.formValues)
-            }
+            this.filtersStream.next()
         })
     }
 
