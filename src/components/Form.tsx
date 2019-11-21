@@ -153,13 +153,13 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     restoreInitialValues() {
         this.setState({
             form: prepareFormInitialState(this.props.formConfig)
-        }, this.filtersStream.next)
+        }, () => this.filtersStream.next())
     }
 
     clearValues() {
         this.setState({
             form: clearFormState(this.props.formConfig)
-        }, this.filtersStream.next)
+        }, () => this.filtersStream.next())
     }
 
     updateState(form: FormBuilderState, callBack?: () => void) {
