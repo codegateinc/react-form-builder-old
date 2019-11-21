@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@types/ramda": "^0.26.33",
+    "rxjs": "6.5.3",
     "styled-components": "4.3.1"
   },
   "browserslist": [
