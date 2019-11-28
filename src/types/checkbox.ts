@@ -7,7 +7,7 @@ export type CheckboxProps = {
     isSelected?: boolean,
     withError?: string,
     formFieldName?: string,
-    onClick: OnCheckboxChange,
+    onClick?: OnCheckboxChange,
     renderComponent?: RenderCheckboxComponent,
     errorMessageStyles?: React.CSSProperties
 }
