@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type RenderCheckboxComponent = (isSelected: boolean) => React.ReactNode
+export type RenderCheckboxComponent = (isSelected: boolean, onClick: () => void) => React.ReactNode
 export type OnCheckboxChange = () => void
 
 export type CheckboxProps = {

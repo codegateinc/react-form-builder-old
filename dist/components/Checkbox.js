@@ -24,9 +24,7 @@ var Checkbox = function Checkbox(_ref) {
       withError = _ref.withError,
       errorMessageStyles = _ref.errorMessageStyles,
       onClick = _ref.onClick;
-  return renderComponent ? _react.default.createElement("div", {
-    onClick: onClick
-  }, renderComponent(Boolean(isSelected)), renderErrorText(withError, errorMessageStyles)) : null;
+  return renderComponent ? _react.default.createElement("div", null, renderComponent(Boolean(isSelected), onClick || function () {}), renderErrorText(withError, errorMessageStyles)) : null;
 };
 
 exports.Checkbox = Checkbox;
