@@ -17,7 +17,7 @@ export const Checkbox: React.FunctionComponent<CheckboxProps> = ({
     onClick
 }) => renderComponent ? (
     <div onClick={onClick}>
-        {renderComponent(Boolean(isSelected))}
+        {renderComponent(Boolean(isSelected), onClick)}
         {renderErrorText(withError, errorMessageStyles)}
     </div>
 ) : null
