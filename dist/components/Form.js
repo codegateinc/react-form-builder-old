@@ -455,7 +455,7 @@ function (_React$Component) {
           });
         }
 
-        return options.includes(Number(currentStateOption.value)) ? _objectSpread({}, currentStateOption, {
+        return options.includes(currentStateOption.value) ? _objectSpread({}, currentStateOption, {
           isSelected: true
         }) : _objectSpread({}, currentStateOption, {
           isSelected: false
