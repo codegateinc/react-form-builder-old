@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import { Subject } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 import { R } from 'lib/utils'
-import { getFormErrors, prepareFormInitialState, clearFormState } from '../utils'
+import { clearFormState, getFormErrors, prepareFormInitialState } from '../utils'
 import {
     CheckboxProps,
     CustomFieldProps,
@@ -194,6 +194,44 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ...this.state.form[fieldName],
                 hasError: errorMessage,
                 isValid: false,
+            } as FieldState
+        })
+    }
+
+    setCustomFieldValue(fieldName: string, value: string | number | boolean) {
+        const form = this.state.form
+        const field = form[fieldName]
+
+        if (field.fieldType === FormField.CustomPicker) {
+            const customPickerField = field as FormCustomPickerState
+
+            return this.updateState({
+                ...form,
+                [fieldName]: {
+                    ...customPickerField,
+                    options: customPickerField.options
+                        .map(option => {
+                            if (option.value === value) {
+                                return {
+                                    ...option,
+                                    isSelected: true
+                                }
+                            }
+
+                            return {
+                                ...option,
+                                isSelected: false
+                            }
+                        })
+                } as FieldState
+            })
+        }
+
+        this.updateState({
+            ...this.state.form,
+            [fieldName]: {
+                ...this.state.form[fieldName],
+                value
             } as FieldState
         })
     }
