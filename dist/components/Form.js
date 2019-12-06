@@ -151,6 +151,33 @@ function (_React$Component) {
       }))));
     }
   }, {
+    key: "setCustomFieldValue",
+    value: function setCustomFieldValue(fieldName, value) {
+      var form = this.state.form;
+      var field = form[fieldName];
+
+      if (field.fieldType === _types.FormField.CustomPicker) {
+        var customPickerField = field;
+        return this.updateState(_objectSpread({}, form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, customPickerField, {
+          options: customPickerField.options.map(function (option) {
+            if (option.value === value) {
+              return _objectSpread({}, option, {
+                isSelected: true
+              });
+            }
+
+            return _objectSpread({}, option, {
+              isSelected: false
+            });
+          })
+        }))));
+      }
+
+      this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
+        value: value
+      }))));
+    }
+  }, {
     key: "checkFieldValidation",
     value: function checkFieldValidation(fieldName, fieldObject, value) {
       var _this6 = this;
