@@ -544,7 +544,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                     }
             }
 
-            return options.includes(Number(currentStateOption.value))
+            return options.includes(currentStateOption.value)
                 ? {
                     ...currentStateOption,
                     isSelected: true
