@@ -443,8 +443,8 @@ function (_React$Component) {
       var pickerConfig = this.props.formConfig[fieldName];
       var isSingleValueMode = pickerConfig.pickerMode === _types.CustomPickerMode.Single;
       var currentPickerState = this.state.form[fieldName];
-      var defaultValue = options.pop();
-      var selectedOptions = _utils.R.isEmpty(defaultValue) || !_utils.R.isDefined(defaultValue) ? [defaultValue] : options.filter(function (option) {
+      var lastValue = options[options.length - 1];
+      var selectedOptions = _utils.R.isEmpty(lastValue) || !_utils.R.isDefined(lastValue) ? [lastValue] : options.filter(function (option) {
         return !_utils.R.isEmpty(option) && _utils.R.isDefined(option);
       });
       var updatedPickerOptions = currentPickerState.options.map(function (currentStateOption) {
