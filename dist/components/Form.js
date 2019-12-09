@@ -443,7 +443,7 @@ function (_React$Component) {
       var pickerConfig = this.props.formConfig[fieldName];
       var isSingleValueMode = pickerConfig.pickerMode === _types.CustomPickerMode.Single;
       var currentPickerState = this.state.form[fieldName];
-      var lastValue = options[options.length - 1];
+      var lastValue = _utils.R.hasElements(options) ? options[options.length - 1] : '';
       var selectedOptions = _utils.R.isEmpty(lastValue) || !_utils.R.isDefined(lastValue) ? [lastValue] : options.filter(function (option) {
         return !_utils.R.isEmpty(option) && _utils.R.isDefined(option);
       });
