@@ -443,6 +443,9 @@ function (_React$Component) {
       var pickerConfig = this.props.formConfig[fieldName];
       var isSingleValueMode = pickerConfig.pickerMode === _types.CustomPickerMode.Single;
       var currentPickerState = this.state.form[fieldName];
+      var selectedOptions = options.filter(function (option) {
+        return !_utils.R.isEmpty(option) && _utils.R.isDefined(option);
+      });
       var updatedPickerOptions = currentPickerState.options.map(function (currentStateOption) {
         if (isSingleValueMode) {
           var _options = (0, _slicedToArray2.default)(options, 1),
@@ -455,7 +458,7 @@ function (_React$Component) {
           });
         }
 
-        return options.includes(currentStateOption.value) ? _objectSpread({}, currentStateOption, {
+        return selectedOptions.includes(currentStateOption.value) ? _objectSpread({}, currentStateOption, {
           isSelected: true
         }) : _objectSpread({}, currentStateOption, {
           isSelected: false
