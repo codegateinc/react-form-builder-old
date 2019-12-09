@@ -529,8 +529,11 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         const pickerConfig = this.props.formConfig[fieldName] as FormCustomPickerConfigProps
         const isSingleValueMode = pickerConfig.pickerMode === CustomPickerMode.Single
         const currentPickerState = this.state.form[fieldName] as FormCustomPickerState
-        const selectedOptions = options
-            .filter(option => !R.isEmpty(option) && R.isDefined(option))
+        const defaultValue = options.pop()
+        const selectedOptions = R.isEmpty(defaultValue) || !R.isDefined(defaultValue)
+            ? [defaultValue]
+            : options
+                .filter(option => !R.isEmpty(option) && R.isDefined(option))
 
         const updatedPickerOptions = currentPickerState.options.map(currentStateOption => {
             if (isSingleValueMode) {
