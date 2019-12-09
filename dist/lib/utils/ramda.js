@@ -45,6 +45,12 @@ Object.defineProperty(exports, "differenceWith", {
     return _ramda.differenceWith;
   }
 });
+Object.defineProperty(exports, "isEmpty", {
+  enumerable: true,
+  get: function get() {
+    return _ramda.isEmpty;
+  }
+});
 exports.hasElements = exports.all = exports.isDefined = exports.isEqual = void 0;
 
 var _ramda = require("ramda");
