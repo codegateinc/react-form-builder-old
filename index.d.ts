@@ -153,7 +153,7 @@ export type CustomFieldProps = {
     value?: string,
     customErrorStyle?: React.CSSProperties,
     onBlur?(): void,
-    component(value: string, onChange: onChangeType, onBlur: () => void): ReactNode
+    component(value: string, onChange: onChangeType, onBlur: () => void, isPristine: boolean): ReactNode
 }
 
 

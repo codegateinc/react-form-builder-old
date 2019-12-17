@@ -627,6 +627,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             return React.cloneElement<CustomFieldProps>(reactElementChild, {
                 ...reactElementChild.props,
                 withError: this.state.form[fieldName].hasError,
+                isPristine: this.state.form[fieldName].isPristine,
                 value: (this.state.form[fieldName] as FormInputState).value,
                 onChange: value => this.onTextChange(value, fieldName),
                 onBlur: () => this.onInputBlur(fieldName)
