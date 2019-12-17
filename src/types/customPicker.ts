@@ -8,7 +8,8 @@ export enum CustomPickerMode {
 export type CustomPickerOption = {
     value: string | number,
     label: string,
-    isSelected: boolean
+    isSelected: boolean,
+    isSelectable?: boolean
 }
 
 export type CustomPickerValidationRule = {
