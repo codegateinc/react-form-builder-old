@@ -57,11 +57,11 @@ function (_React$Component) {
   }, {
     key: "renderCustomField",
     value: function renderCustomField() {
-      if (this.props.value === undefined) {
+      if (this.props.value === undefined || this.props.isPristine === undefined) {
         throw Error('value is required');
       }
 
-      return this.props.component(this.props.value, this.onCustomFieldChange, this.onCustomFieldBlur);
+      return this.props.component(this.props.value, this.onCustomFieldChange, this.onCustomFieldBlur, this.props.isPristine);
     }
   }, {
     key: "renderError",
