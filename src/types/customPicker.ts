@@ -27,11 +27,17 @@ export type CustomPickerState = {
 
 export type CustomPickerProps = {
     withError?: string,
+    isPristine?: boolean,
     formFieldName?: string,
     customErrorStyle?: React.CSSProperties,
     onOptionChange?: OnCustomPickerOptionPress,
     isPickerAlwaysVisible?: boolean,
     options?: Array<CustomPickerOption>,
     renderPlaceholderComponent?: RenderPlaceholderComponent,
-    renderPickerComponent(options: Array<CustomPickerOption>, onOptionPress: OnCustomPickerOptionPress, togglePicker: TogglePickerVisibilityState): React.ReactNode,
+    renderPickerComponent(
+        options: Array<CustomPickerOption>,
+        onOptionPress: OnCustomPickerOptionPress,
+        togglePicker: TogglePickerVisibilityState,
+        isPristine: boolean
+    ): React.ReactNode,
 }

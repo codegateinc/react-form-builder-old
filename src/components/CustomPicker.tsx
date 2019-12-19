@@ -45,13 +45,13 @@ export class CustomPicker extends React.Component<CustomPickerProps, CustomPicke
     }
 
     renderPickerComponent() {
-        if (!this.props.options) {
+        if (!this.props.options || !this.props.isPristine) {
             throw new Error('options are mandatory')
         }
 
         return this.state.isPickerVisible ? (
             <Fragment>
-                {this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility)}
+                {this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility, this.props.isPristine)}
             </Fragment>
         ): null
     }

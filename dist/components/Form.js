@@ -546,6 +546,7 @@ function (_React$Component) {
         return _react.default.cloneElement(reactElementChild, _objectSpread({}, reactElementChild.props, {
           withError: this.state.form[_fieldName2].hasError,
           options: pickerState.options,
+          isPristine: this.state.form[_fieldName2].isPristine,
           onOptionChange: function onOptionChange(options) {
             return _this8.handlePickerOptionChange(_fieldName2, options);
           }
