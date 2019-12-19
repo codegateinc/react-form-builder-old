@@ -121,7 +121,8 @@ export enum FormField {
 export type CustomPickerOption = {
     value: string | number,
     label: string,
-    isSelected?: boolean
+    isSelected?: boolean,
+    isSelectable?: boolean
 }
 
 export type TogglePickerVisibilityState = (isVisible: boolean) => void
