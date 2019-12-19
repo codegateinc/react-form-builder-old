@@ -141,7 +141,12 @@ type CustomPickerProps = {
     isPickerAlwaysVisible?: boolean,
     options?: Array<CustomPickerOption>,
     renderPlaceholderComponent?: RenderPlaceholderComponent,
-    renderPickerComponent(options: Array<CustomPickerOption>, onOptionPress: OnCustomPickerOptionPress, togglePicker: TogglePickerVisibilityState): ReactNode,
+    renderPickerComponent(
+        options: Array<CustomPickerOption>,
+        onOptionPress: OnCustomPickerOptionPress,
+        togglePicker: TogglePickerVisibilityState,
+        isPristine: boolean
+    ): ReactNode,
 }
 
 type onChangeType = (value: string) => void
