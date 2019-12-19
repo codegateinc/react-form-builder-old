@@ -78,7 +78,7 @@ function (_React$Component) {
   }, {
     key: "renderPickerComponent",
     value: function renderPickerComponent() {
-      if (!this.props.options || !this.props.isPristine) {
+      if (!this.props.options || this.props.isPristine === undefined) {
         throw new Error('options are mandatory');
       }
 
