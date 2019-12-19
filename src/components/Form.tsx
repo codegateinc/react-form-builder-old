@@ -642,6 +642,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ...reactElementChild.props,
                 withError: this.state.form[fieldName].hasError,
                 options: pickerState.options,
+                isPristine: this.state.form[fieldName].isPristine,
                 onOptionChange: options => this.handlePickerOptionChange(fieldName, options)
             })
         }

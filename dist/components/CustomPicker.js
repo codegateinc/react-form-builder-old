@@ -78,11 +78,11 @@ function (_React$Component) {
   }, {
     key: "renderPickerComponent",
     value: function renderPickerComponent() {
-      if (!this.props.options) {
+      if (!this.props.options || !this.props.isPristine) {
         throw new Error('options are mandatory');
       }
 
-      return this.state.isPickerVisible ? _react.default.createElement(_react.Fragment, null, this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility)) : null;
+      return this.state.isPickerVisible ? _react.default.createElement(_react.Fragment, null, this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility, this.props.isPristine)) : null;
     }
   }, {
     key: "renderError",
