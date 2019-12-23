@@ -119,7 +119,7 @@ export enum FormField {
 }
 
 export type CustomPickerOption = {
-    value: string | number,
+    value: string | number | boolean | null,
     label: string,
     isSelected?: boolean,
     isSelectable?: boolean
@@ -132,7 +132,7 @@ type CustomPickerState = {
     isPickerVisible: boolean,
 }
 
-export type OnCustomPickerOptionPress = (options: Array<number | string>) => void
+export type OnCustomPickerOptionPress = (options: Array<number | string | boolean | null>) => void
 
 type CustomPickerProps = {
     withError?: string,
