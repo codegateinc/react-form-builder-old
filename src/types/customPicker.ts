@@ -6,7 +6,7 @@ export enum CustomPickerMode {
 }
 
 export type CustomPickerOption = {
-    value: string | number,
+    value: string | number | boolean | null,
     label: string,
     isSelected: boolean,
     isSelectable?: boolean
@@ -19,7 +19,7 @@ export type CustomPickerValidationRule = {
 
 export type TogglePickerVisibilityState = (isVisible: boolean) => void
 export type RenderPlaceholderComponent = (selectedOptions: Array<CustomPickerOption>, isPickerVisible: boolean, togglePicker: TogglePickerVisibilityState) => React.ReactNode
-export type OnCustomPickerOptionPress = (options: Array<number | string>) => void
+export type OnCustomPickerOptionPress = (options: Array<number | string | boolean | null>) => void
 
 export type CustomPickerState = {
     isPickerVisible: boolean,
