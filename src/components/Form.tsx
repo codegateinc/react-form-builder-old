@@ -568,7 +568,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             ...this.state.form,
             [fieldName]: {
                 ...currentPickerState,
-                hasError: undefined,
+                hasError: this.getCustomPickerErrorMessage(fieldName),
                 isPristine,
                 options: updatedPickerOptions
             }
