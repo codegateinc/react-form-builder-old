@@ -66,6 +66,7 @@ function (_React$Component) {
   }, {
     key: "renderError",
     value: function renderError() {
+      console.log(this.props.withError);
       return _react.default.createElement(_ErrorMessage.ErrorMessage, {
         text: this.props.withError,
         style: this.props.customErrorStyle
