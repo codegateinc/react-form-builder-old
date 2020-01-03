@@ -146,6 +146,7 @@ type CustomPickerProps = {
         options: Array<CustomPickerOption>,
         onOptionPress: OnCustomPickerOptionPress,
         togglePicker: TogglePickerVisibilityState,
+        onBlur: () => void,
         isPristine: boolean
     ): ReactNode,
 }

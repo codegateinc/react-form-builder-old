@@ -10,6 +10,7 @@ export class CustomPicker extends React.Component<CustomPickerProps, CustomPicke
     constructor(props: CustomPickerProps) {
         super(props)
 
+        this.onBlur = this.onBlur.bind(this)
         this.onOptionPress = this.onOptionPress.bind(this)
         this.setPickerVisibility = this.setPickerVisibility.bind(this)
     }
@@ -44,6 +45,12 @@ export class CustomPicker extends React.Component<CustomPickerProps, CustomPicke
         )
     }
 
+    onBlur() {
+        if (this.props.onBlur) {
+            this.props.onBlur()
+        }
+    }
+
     renderPickerComponent() {
         if (!this.props.options || this.props.isPristine === undefined) {
             throw new Error('options are mandatory')
@@ -51,7 +58,13 @@ export class CustomPicker extends React.Component<CustomPickerProps, CustomPicke
 
         return this.state.isPickerVisible ? (
             <Fragment>
-                {this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility, this.props.isPristine)}
+                {this.props.renderPickerComponent(
+                    this.props.options,
+                    this.onOptionPress,
+                    this.setPickerVisibility,
+                    this.onBlur,
+                    this.props.isPristine
+                )}
             </Fragment>
         ): null
     }

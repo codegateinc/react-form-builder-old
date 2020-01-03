@@ -549,6 +549,9 @@ function (_React$Component) {
           isPristine: this.state.form[_fieldName2].isPristine,
           onOptionChange: function onOptionChange(options) {
             return _this8.handlePickerOptionChange(_fieldName2, options);
+          },
+          onBlur: function onBlur() {
+            return _this8.onInputBlur(_fieldName2);
           }
         }));
       }
