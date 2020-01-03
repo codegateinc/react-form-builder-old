@@ -182,7 +182,7 @@ function (_React$Component) {
     value: function checkFieldValidation(fieldName, fieldObject, value) {
       var _this6 = this;
 
-      if (fieldObject.fieldType === _types.FormField.Input) {
+      if (fieldObject.fieldType === _types.FormField.Input || fieldObject.fieldType === _types.FormField.CustomField) {
         var fieldProperties = fieldObject;
         var isValid = this.validateField(fieldName, fieldProperties.value);
         var _ref3 = this.props.formConfig[fieldName],
