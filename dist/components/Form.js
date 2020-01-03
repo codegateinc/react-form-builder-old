@@ -429,6 +429,7 @@ function (_React$Component) {
 
       var hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith.fieldName].isPristine ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith.fieldName, currentValue) : true;
       var errorMessage = !isValid ? this.getFieldErrorMessage(fieldName, currentValue) : !hasValidCompare ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage : undefined;
+      console.log(errorMessage, this.getFieldErrorMessage(fieldName, currentValue));
       var isPristine = !(currentValue !== this.props.formConfig[fieldName].value);
       this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         isValid: isValid,

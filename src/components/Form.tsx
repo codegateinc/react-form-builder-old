@@ -511,6 +511,8 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
                 : undefined
 
+        console.log(errorMessage, this.getFieldErrorMessage(fieldName, currentValue))
+
         const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
 
         this.updateState({
