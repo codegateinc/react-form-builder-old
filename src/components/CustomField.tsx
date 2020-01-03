@@ -31,6 +31,8 @@ export class CustomField extends React.Component<CustomFieldProps> {
     }
 
     renderError() {
+        console.log(this.props.withError)
+
         return (
             <ErrorMessage
                 text={this.props.withError}
