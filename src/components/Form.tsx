@@ -495,8 +495,20 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
         })
     }
 
-    onInputBlur(fieldName: string) {
-        const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
+    getCustomPickerSelectedValue(fieldName: string) {
+        const options = (this.state.form[fieldName] as FormCustomPickerState).options
+        const [selected] = options
+            .filter(option => option.isSelected)
+
+        return selected
+            ? String(selected.value || '')
+            : ''
+    }
+
+    onInputBlur(fieldName: string, customPicker: boolean = false) {
+        const currentValue = !customPicker
+            ? ((this.state.form[fieldName] as FormInputState).value).trim()
+            : this.getCustomPickerSelectedValue(fieldName)
         const isValid = this.validateField(fieldName, currentValue)
         const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
 
@@ -524,6 +536,35 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             } as FormInputState
         })
     }
+
+    // onCustomPickerBlur(fieldName: string) {
+    //     const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
+    //     const isValid = this.validateField(fieldName, currentValue)
+    //     const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
+    //
+    //     // isValid and compareWith exists and not comparedWithIsPristine
+    //     const hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith!.fieldName].isPristine
+    //         ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith!.fieldName, currentValue)
+    //         : true
+    //
+    //     const errorMessage = !isValid
+    //         ? this.getFieldErrorMessage(fieldName, currentValue)
+    //         : !hasValidCompare
+    //             ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
+    //             : undefined
+    //
+    //     const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
+    //
+    //     this.updateState({
+    //         ...this.state.form,
+    //         [fieldName]: {
+    //             ...this.state.form[fieldName],
+    //             isValid,
+    //             hasError: errorMessage,
+    //             value: currentValue,
+    //             isPristine
+    //         } as FormInputState
+    //     })
 
     handlePickerOptionChange(fieldName: string, options: Array<number | string | null>) {
         const pickerConfig = this.props.formConfig[fieldName] as FormCustomPickerConfigProps
@@ -630,7 +671,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 isPristine: this.state.form[fieldName].isPristine,
                 value: (this.state.form[fieldName] as FormInputState).value,
                 onChange: value => this.onTextChange(value, fieldName),
-                onBlur: () => this.onInputBlur(fieldName)
+                onBlur: () => this.onInputBlur(fieldName, true)
             })
         }
 

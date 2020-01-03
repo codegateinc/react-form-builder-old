@@ -421,9 +421,23 @@ function (_React$Component) {
       }))));
     }
   }, {
+    key: "getCustomPickerSelectedValue",
+    value: function getCustomPickerSelectedValue(fieldName) {
+      var options = this.state.form[fieldName].options;
+
+      var _options$filter = options.filter(function (option) {
+        return option.isSelected;
+      }),
+          _options$filter2 = (0, _slicedToArray2.default)(_options$filter, 1),
+          selected = _options$filter2[0];
+
+      return selected ? String(selected.value || '') : '';
+    }
+  }, {
     key: "onInputBlur",
     value: function onInputBlur(fieldName) {
-      var currentValue = this.state.form[fieldName].value.trim();
+      var customPicker = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var currentValue = !customPicker ? this.state.form[fieldName].value.trim() : this.getCustomPickerSelectedValue(fieldName);
       var isValid = this.validateField(fieldName, currentValue);
       var formFieldConfigProps = this.props.formConfig[fieldName]; // isValid and compareWith exists and not comparedWithIsPristine
 
@@ -436,7 +450,35 @@ function (_React$Component) {
         value: currentValue,
         isPristine: isPristine
       }))));
-    }
+    } // onCustomPickerBlur(fieldName: string) {
+    //     const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
+    //     const isValid = this.validateField(fieldName, currentValue)
+    //     const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
+    //
+    //     // isValid and compareWith exists and not comparedWithIsPristine
+    //     const hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith!.fieldName].isPristine
+    //         ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith!.fieldName, currentValue)
+    //         : true
+    //
+    //     const errorMessage = !isValid
+    //         ? this.getFieldErrorMessage(fieldName, currentValue)
+    //         : !hasValidCompare
+    //             ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
+    //             : undefined
+    //
+    //     const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
+    //
+    //     this.updateState({
+    //         ...this.state.form,
+    //         [fieldName]: {
+    //             ...this.state.form[fieldName],
+    //             isValid,
+    //             hasError: errorMessage,
+    //             value: currentValue,
+    //             isPristine
+    //         } as FormInputState
+    //     })
+
   }, {
     key: "handlePickerOptionChange",
     value: function handlePickerOptionChange(fieldName, options) {
@@ -535,7 +577,7 @@ function (_React$Component) {
             return _this8.onTextChange(value, _fieldName);
           },
           onBlur: function onBlur() {
-            return _this8.onInputBlur(_fieldName);
+            return _this8.onInputBlur(_fieldName, true);
           }
         }));
       }
