@@ -671,7 +671,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 isPristine: this.state.form[fieldName].isPristine,
                 value: (this.state.form[fieldName] as FormInputState).value,
                 onChange: value => this.onTextChange(value, fieldName),
-                onBlur: () => this.onInputBlur(fieldName, true)
+                onBlur: () => this.onInputBlur(fieldName)
             })
         }
 
@@ -685,7 +685,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 options: pickerState.options,
                 isPristine: this.state.form[fieldName].isPristine,
                 onOptionChange: options => this.handlePickerOptionChange(fieldName, options),
-                onBlur: () => this.onInputBlur(fieldName)
+                onBlur: () => this.onInputBlur(fieldName, true)
             })
         }
 

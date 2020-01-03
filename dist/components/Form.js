@@ -577,7 +577,7 @@ function (_React$Component) {
             return _this8.onTextChange(value, _fieldName);
           },
           onBlur: function onBlur() {
-            return _this8.onInputBlur(_fieldName, true);
+            return _this8.onInputBlur(_fieldName);
           }
         }));
       }
@@ -593,7 +593,7 @@ function (_React$Component) {
             return _this8.handlePickerOptionChange(_fieldName2, options);
           },
           onBlur: function onBlur() {
-            return _this8.onInputBlur(_fieldName2);
+            return _this8.onInputBlur(_fieldName2, true);
           }
         }));
       }
