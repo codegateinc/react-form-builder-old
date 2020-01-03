@@ -237,7 +237,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     }
 
     checkFieldValidation(fieldName: string, fieldObject: FieldState, value?: string) {
-        if (fieldObject.fieldType === FormField.Input) {
+        if (fieldObject.fieldType === FormField.Input || fieldObject.fieldType === FormField.CustomField) {
             const fieldProperties = fieldObject as FormInputState
             const isValid = this.validateField(fieldName, fieldProperties.value as string)
             const { compareWith } = this.props.formConfig[fieldName] as FormInputConfigProps
