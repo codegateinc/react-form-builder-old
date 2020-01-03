@@ -472,7 +472,7 @@ function (_React$Component) {
 
       var isPristine = !_utils.R.hasElements(_utils.R.differenceWith(comparator, updatedPickerOptions, pickerConfig.options));
       return this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, currentPickerState, {
-        hasError: undefined,
+        hasError: this.getCustomPickerErrorMessage(fieldName),
         isPristine: isPristine,
         options: updatedPickerOptions
       }))));
