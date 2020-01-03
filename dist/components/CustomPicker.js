@@ -40,6 +40,7 @@ function (_React$Component) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "state", {
       isPickerVisible: Boolean(_this.props.isPickerAlwaysVisible)
     });
+    _this.onBlur = _this.onBlur.bind((0, _assertThisInitialized2.default)(_this));
     _this.onOptionPress = _this.onOptionPress.bind((0, _assertThisInitialized2.default)(_this));
     _this.setPickerVisibility = _this.setPickerVisibility.bind((0, _assertThisInitialized2.default)(_this));
     return _this;
@@ -76,13 +77,20 @@ function (_React$Component) {
       return _react.default.createElement(_react.Fragment, null, this.props.renderPlaceholderComponent(selectedOptions, this.state.isPickerVisible, this.setPickerVisibility));
     }
   }, {
+    key: "onBlur",
+    value: function onBlur() {
+      if (this.props.onBlur) {
+        this.props.onBlur();
+      }
+    }
+  }, {
     key: "renderPickerComponent",
     value: function renderPickerComponent() {
       if (!this.props.options || this.props.isPristine === undefined) {
         throw new Error('options are mandatory');
       }
 
-      return this.state.isPickerVisible ? _react.default.createElement(_react.Fragment, null, this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility, this.props.isPristine)) : null;
+      return this.state.isPickerVisible ? _react.default.createElement(_react.Fragment, null, this.props.renderPickerComponent(this.props.options, this.onOptionPress, this.setPickerVisibility, this.onBlur, this.props.isPristine)) : null;
     }
   }, {
     key: "renderError",

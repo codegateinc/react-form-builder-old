@@ -34,10 +34,12 @@ export type CustomPickerProps = {
     isPickerAlwaysVisible?: boolean,
     options?: Array<CustomPickerOption>,
     renderPlaceholderComponent?: RenderPlaceholderComponent,
+    onBlur?: () => void,
     renderPickerComponent(
         options: Array<CustomPickerOption>,
         onOptionPress: OnCustomPickerOptionPress,
         togglePicker: TogglePickerVisibilityState,
+        onBlur: () => void,
         isPristine: boolean
     ): React.ReactNode,
 }
