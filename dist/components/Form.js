@@ -112,16 +112,12 @@ function (_React$Component) {
   }, {
     key: "updateState",
     value: function updateState(form, callBack) {
-      var _this5 = this;
-
       this.setState({
         form: form
       }, function () {
         if (callBack) {
           callBack();
         }
-
-        _this5.filtersStream.next();
       });
     }
   }, {
@@ -148,7 +144,7 @@ function (_React$Component) {
       this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         hasError: errorMessage,
         isValid: false
-      }))));
+      }))), this.filtersStream.next);
     }
   }, {
     key: "setCustomFieldValue",
@@ -170,17 +166,17 @@ function (_React$Component) {
               isSelected: false
             });
           })
-        }))));
+        }))), this.filtersStream.next);
       }
 
       this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         value: value
-      }))));
+      }))), this.filtersStream.next);
     }
   }, {
     key: "checkFieldValidation",
     value: function checkFieldValidation(fieldName, fieldObject, value) {
-      var _this6 = this;
+      var _this5 = this;
 
       if (fieldObject.fieldType === _types.FormField.Input || fieldObject.fieldType === _types.FormField.CustomField) {
         var fieldProperties = fieldObject;
@@ -191,11 +187,11 @@ function (_React$Component) {
         var hasError = _utils.R.cond([[function () {
           return !isValid;
         }, function () {
-          return _this6.getFieldErrorMessage(fieldName, fieldProperties.value);
+          return _this5.getFieldErrorMessage(fieldName, fieldProperties.value);
         }], [function () {
           return Boolean(compareWith);
         }, function () {
-          return fieldProperties.value !== (value || _this6.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
+          return fieldProperties.value !== (value || _this5.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
         }], [_utils.R.T, _utils.R.always(undefined)]])();
 
         return [fieldName, _objectSpread({}, fieldObject, {
@@ -218,20 +214,20 @@ function (_React$Component) {
   }, {
     key: "checkedFormFields",
     value: function checkedFormFields() {
-      var _this7 = this;
+      var _this6 = this;
 
       return _utils.R.toPairs(this.state.form).filter(function (_ref4) {
         var _ref5 = (0, _slicedToArray2.default)(_ref4, 2),
             fieldName = _ref5[0],
             fieldObject = _ref5[1];
 
-        return fieldObject.isRequired || fieldObject.fieldType === _types.FormField.Input && Boolean(fieldObject.value) && Boolean(_this7.props.formConfig[fieldName].validationRules);
+        return fieldObject.isRequired || fieldObject.fieldType === _types.FormField.Input && Boolean(fieldObject.value) && Boolean(_this6.props.formConfig[fieldName].validationRules);
       }).map(function (_ref6) {
         var _ref7 = (0, _slicedToArray2.default)(_ref6, 2),
             fieldName = _ref7[0],
             fieldObject = _ref7[1];
 
-        return _this7.checkFieldValidation(fieldName, fieldObject);
+        return _this6.checkFieldValidation(fieldName, fieldObject);
       }).reduce(function (acc, _ref8) {
         var _ref9 = (0, _slicedToArray2.default)(_ref8, 2),
             fieldName = _ref9[0],
@@ -418,7 +414,7 @@ function (_React$Component) {
         isValid: isValid,
         hasError: errorMessage,
         isPristine: isPristine
-      }))));
+      }))), this.filtersStream.next);
     }
   }, {
     key: "getCustomPickerSelectedValue",
@@ -436,6 +432,8 @@ function (_React$Component) {
   }, {
     key: "onInputBlur",
     value: function onInputBlur(fieldName) {
+      var _this7 = this;
+
       var customPicker = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var currentValue = !customPicker ? this.state.form[fieldName].value.trim() : this.getCustomPickerSelectedValue(fieldName);
       var isValid = this.validateField(fieldName, currentValue);
@@ -449,36 +447,12 @@ function (_React$Component) {
         hasError: errorMessage,
         value: currentValue,
         isPristine: isPristine
-      }))));
-    } // onCustomPickerBlur(fieldName: string) {
-    //     const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
-    //     const isValid = this.validateField(fieldName, currentValue)
-    //     const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
-    //
-    //     // isValid and compareWith exists and not comparedWithIsPristine
-    //     const hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith!.fieldName].isPristine
-    //         ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith!.fieldName, currentValue)
-    //         : true
-    //
-    //     const errorMessage = !isValid
-    //         ? this.getFieldErrorMessage(fieldName, currentValue)
-    //         : !hasValidCompare
-    //             ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
-    //             : undefined
-    //
-    //     const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
-    //
-    //     this.updateState({
-    //         ...this.state.form,
-    //         [fieldName]: {
-    //             ...this.state.form[fieldName],
-    //             isValid,
-    //             hasError: errorMessage,
-    //             value: currentValue,
-    //             isPristine
-    //         } as FormInputState
-    //     })
-
+      }))), function () {
+        if (customPicker) {
+          _this7.filtersStream.next();
+        }
+      });
+    }
   }, {
     key: "handlePickerOptionChange",
     value: function handlePickerOptionChange(fieldName, options) {
@@ -517,7 +491,7 @@ function (_React$Component) {
         hasError: this.getCustomPickerErrorMessage(fieldName),
         isPristine: isPristine,
         options: updatedPickerOptions
-      }))));
+      })))), this.filtersStream.next;
     }
   }, {
     key: "handleCheckboxChange",
@@ -527,7 +501,7 @@ function (_React$Component) {
         value: newValue,
         isPristine: false,
         hasError: this.getCheckboxErrorMessage(fieldName, newValue)
-      }))));
+      }))), this.filtersStream.next);
     }
   }, {
     key: "renderChild",
