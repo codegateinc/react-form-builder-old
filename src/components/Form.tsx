@@ -169,8 +169,6 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             if (callBack) {
                 callBack()
             }
-
-            this.filtersStream.next()
         })
     }
 
@@ -195,7 +193,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 hasError: errorMessage,
                 isValid: false,
             } as FieldState
-        })
+        }, this.filtersStream.next)
     }
 
     setCustomFieldValue(fieldName: string, value: string | number | boolean) {
@@ -224,7 +222,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                             }
                         })
                 } as FieldState
-            })
+            }, this.filtersStream.next)
         }
 
         this.updateState({
@@ -233,7 +231,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ...this.state.form[fieldName],
                 value
             } as FieldState
-        })
+        }, this.filtersStream.next)
     }
 
     checkFieldValidation(fieldName: string, fieldObject: FieldState, value?: string) {
@@ -492,7 +490,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 hasError: errorMessage,
                 isPristine
             },
-        })
+        }, this.filtersStream.next)
     }
 
     getCustomPickerSelectedValue(fieldName: string) {
@@ -534,37 +532,12 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 value: currentValue,
                 isPristine
             } as FormInputState
+        }, () => {
+            if (customPicker) {
+                this.filtersStream.next()
+            }
         })
     }
-
-    // onCustomPickerBlur(fieldName: string) {
-    //     const currentValue = ((this.state.form[fieldName] as FormInputState).value).trim()
-    //     const isValid = this.validateField(fieldName, currentValue)
-    //     const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
-    //
-    //     // isValid and compareWith exists and not comparedWithIsPristine
-    //     const hasValidCompare = isValid && Boolean(formFieldConfigProps.compareWith) && !this.state.form[formFieldConfigProps.compareWith!.fieldName].isPristine
-    //         ? this.fieldHasValidCompares(fieldName, formFieldConfigProps.compareWith!.fieldName, currentValue)
-    //         : true
-    //
-    //     const errorMessage = !isValid
-    //         ? this.getFieldErrorMessage(fieldName, currentValue)
-    //         : !hasValidCompare
-    //             ? formFieldConfigProps.compareWith && formFieldConfigProps.compareWith.errorMessage
-    //             : undefined
-    //
-    //     const isPristine = !(currentValue !== (this.props.formConfig[fieldName] as FormInputConfigProps).value)
-    //
-    //     this.updateState({
-    //         ...this.state.form,
-    //         [fieldName]: {
-    //             ...this.state.form[fieldName],
-    //             isValid,
-    //             hasError: errorMessage,
-    //             value: currentValue,
-    //             isPristine
-    //         } as FormInputState
-    //     })
 
     handlePickerOptionChange(fieldName: string, options: Array<number | string | null>) {
         const pickerConfig = this.props.formConfig[fieldName] as FormCustomPickerConfigProps
@@ -613,7 +586,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 isPristine,
                 options: updatedPickerOptions
             }
-        })
+        }), this.filtersStream.next
     }
 
     handleCheckboxChange(fieldName: string) {
@@ -627,7 +600,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 isPristine: false,
                 hasError: this.getCheckboxErrorMessage(fieldName, newValue)
             }
-        })
+        }, this.filtersStream.next)
     }
 
     renderChild(child: React.ReactNode) {
