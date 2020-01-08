@@ -222,7 +222,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                             }
                         })
                 } as FieldState
-            }, this.filtersStream.next)
+            }, () => this.filtersStream.next())
         }
 
         this.updateState({
@@ -231,7 +231,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 ...this.state.form[fieldName],
                 value
             } as FieldState
-        }, this.filtersStream.next)
+        }, () => this.filtersStream.next())
     }
 
     checkFieldValidation(fieldName: string, fieldObject: FieldState, value?: string) {
@@ -490,7 +490,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 hasError: errorMessage,
                 isPristine
             },
-        }, this.filtersStream.next)
+        }, () => this.filtersStream.next())
     }
 
     getCustomPickerSelectedValue(fieldName: string) {
@@ -586,7 +586,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 isPristine,
                 options: updatedPickerOptions
             }
-        }), this.filtersStream.next
+        }, () => this.filtersStream.next())
     }
 
     handleCheckboxChange(fieldName: string) {
@@ -600,7 +600,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 isPristine: false,
                 hasError: this.getCheckboxErrorMessage(fieldName, newValue)
             }
-        }, this.filtersStream.next)
+        }, () => this.filtersStream.next())
     }
 
     renderChild(child: React.ReactNode) {

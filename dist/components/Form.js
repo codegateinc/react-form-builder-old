@@ -149,6 +149,8 @@ function (_React$Component) {
   }, {
     key: "setCustomFieldValue",
     value: function setCustomFieldValue(fieldName, value) {
+      var _this5 = this;
+
       var form = this.state.form;
       var field = form[fieldName];
 
@@ -166,17 +168,21 @@ function (_React$Component) {
               isSelected: false
             });
           })
-        }))), this.filtersStream.next);
+        }))), function () {
+          return _this5.filtersStream.next();
+        });
       }
 
       this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         value: value
-      }))), this.filtersStream.next);
+      }))), function () {
+        return _this5.filtersStream.next();
+      });
     }
   }, {
     key: "checkFieldValidation",
     value: function checkFieldValidation(fieldName, fieldObject, value) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (fieldObject.fieldType === _types.FormField.Input || fieldObject.fieldType === _types.FormField.CustomField) {
         var fieldProperties = fieldObject;
@@ -187,11 +193,11 @@ function (_React$Component) {
         var hasError = _utils.R.cond([[function () {
           return !isValid;
         }, function () {
-          return _this5.getFieldErrorMessage(fieldName, fieldProperties.value);
+          return _this6.getFieldErrorMessage(fieldName, fieldProperties.value);
         }], [function () {
           return Boolean(compareWith);
         }, function () {
-          return fieldProperties.value !== (value || _this5.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
+          return fieldProperties.value !== (value || _this6.state.form[compareWith.fieldName].value) ? compareWith.errorMessage : undefined;
         }], [_utils.R.T, _utils.R.always(undefined)]])();
 
         return [fieldName, _objectSpread({}, fieldObject, {
@@ -214,20 +220,20 @@ function (_React$Component) {
   }, {
     key: "checkedFormFields",
     value: function checkedFormFields() {
-      var _this6 = this;
+      var _this7 = this;
 
       return _utils.R.toPairs(this.state.form).filter(function (_ref4) {
         var _ref5 = (0, _slicedToArray2.default)(_ref4, 2),
             fieldName = _ref5[0],
             fieldObject = _ref5[1];
 
-        return fieldObject.isRequired || fieldObject.fieldType === _types.FormField.Input && Boolean(fieldObject.value) && Boolean(_this6.props.formConfig[fieldName].validationRules);
+        return fieldObject.isRequired || fieldObject.fieldType === _types.FormField.Input && Boolean(fieldObject.value) && Boolean(_this7.props.formConfig[fieldName].validationRules);
       }).map(function (_ref6) {
         var _ref7 = (0, _slicedToArray2.default)(_ref6, 2),
             fieldName = _ref7[0],
             fieldObject = _ref7[1];
 
-        return _this6.checkFieldValidation(fieldName, fieldObject);
+        return _this7.checkFieldValidation(fieldName, fieldObject);
       }).reduce(function (acc, _ref8) {
         var _ref9 = (0, _slicedToArray2.default)(_ref8, 2),
             fieldName = _ref9[0],
@@ -399,6 +405,8 @@ function (_React$Component) {
   }, {
     key: "onTextChange",
     value: function onTextChange(value, formFieldName) {
+      var _this8 = this;
+
       var formField = this.state.form[formFieldName];
       var formFieldConfigProps = this.props.formConfig[formFieldName];
       var shouldLiveCheck = Boolean(formField.hasError) || this.isFormValid;
@@ -414,7 +422,9 @@ function (_React$Component) {
         isValid: isValid,
         hasError: errorMessage,
         isPristine: isPristine
-      }))), this.filtersStream.next);
+      }))), function () {
+        return _this8.filtersStream.next();
+      });
     }
   }, {
     key: "getCustomPickerSelectedValue",
@@ -432,7 +442,7 @@ function (_React$Component) {
   }, {
     key: "onInputBlur",
     value: function onInputBlur(fieldName) {
-      var _this7 = this;
+      var _this9 = this;
 
       var customPicker = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var currentValue = !customPicker ? this.state.form[fieldName].value.trim() : this.getCustomPickerSelectedValue(fieldName);
@@ -449,13 +459,15 @@ function (_React$Component) {
         isPristine: isPristine
       }))), function () {
         if (customPicker) {
-          _this7.filtersStream.next();
+          _this9.filtersStream.next();
         }
       });
     }
   }, {
     key: "handlePickerOptionChange",
     value: function handlePickerOptionChange(fieldName, options) {
+      var _this10 = this;
+
       var pickerConfig = this.props.formConfig[fieldName];
       var isSingleValueMode = pickerConfig.pickerMode === _types.CustomPickerMode.Single;
       var currentPickerState = this.state.form[fieldName];
@@ -491,22 +503,28 @@ function (_React$Component) {
         hasError: this.getCustomPickerErrorMessage(fieldName),
         isPristine: isPristine,
         options: updatedPickerOptions
-      })))), this.filtersStream.next;
+      }))), function () {
+        return _this10.filtersStream.next();
+      });
     }
   }, {
     key: "handleCheckboxChange",
     value: function handleCheckboxChange(fieldName) {
+      var _this11 = this;
+
       var newValue = !this.state.form[fieldName].value;
       this.updateState(_objectSpread({}, this.state.form, (0, _defineProperty2.default)({}, fieldName, _objectSpread({}, this.state.form[fieldName], {
         value: newValue,
         isPristine: false,
         hasError: this.getCheckboxErrorMessage(fieldName, newValue)
-      }))), this.filtersStream.next);
+      }))), function () {
+        return _this11.filtersStream.next();
+      });
     }
   }, {
     key: "renderChild",
     value: function renderChild(child) {
-      var _this8 = this;
+      var _this12 = this;
 
       if (_utils.R.is(String, child) || _utils.R.is(Number, child) || child === null) {
         return child;
@@ -532,10 +550,10 @@ function (_React$Component) {
             value: this.state.form[fieldName].value,
             onChange: function onChange(_ref17) {
               var currentTarget = _ref17.currentTarget;
-              return _this8.onTextChange(currentTarget.value, fieldName);
+              return _this12.onTextChange(currentTarget.value, fieldName);
             },
             onBlur: function onBlur() {
-              return _this8.onInputBlur(fieldName);
+              return _this12.onInputBlur(fieldName);
             }
           })
         }));
@@ -548,10 +566,10 @@ function (_React$Component) {
           isPristine: this.state.form[_fieldName].isPristine,
           value: this.state.form[_fieldName].value,
           onChange: function onChange(value) {
-            return _this8.onTextChange(value, _fieldName);
+            return _this12.onTextChange(value, _fieldName);
           },
           onBlur: function onBlur() {
-            return _this8.onInputBlur(_fieldName);
+            return _this12.onInputBlur(_fieldName);
           }
         }));
       }
@@ -564,10 +582,10 @@ function (_React$Component) {
           options: pickerState.options,
           isPristine: this.state.form[_fieldName2].isPristine,
           onOptionChange: function onOptionChange(options) {
-            return _this8.handlePickerOptionChange(_fieldName2, options);
+            return _this12.handlePickerOptionChange(_fieldName2, options);
           },
           onBlur: function onBlur() {
-            return _this8.onInputBlur(_fieldName2, true);
+            return _this12.onInputBlur(_fieldName2, true);
           }
         }));
       }
@@ -578,7 +596,7 @@ function (_React$Component) {
           withError: this.state.form[_fieldName3].hasError,
           isSelected: this.state.form[_fieldName3].value,
           onClick: function onClick() {
-            return _this8.handleCheckboxChange(_fieldName3);
+            return _this12.handleCheckboxChange(_fieldName3);
           }
         }));
       }
@@ -614,7 +632,7 @@ function (_React$Component) {
   }, {
     key: "isFormValid",
     get: function get() {
-      var _this9 = this;
+      var _this13 = this;
 
       var areInputsValid = _utils.R.toPairs(this.state.form).filter(function (_ref18) {
         var _ref19 = (0, _slicedToArray2.default)(_ref18, 2),
@@ -626,7 +644,7 @@ function (_React$Component) {
             fieldName = _ref21[0],
             fieldObject = _ref21[1];
 
-        return _this9.validateField(fieldName, fieldObject.value);
+        return _this13.validateField(fieldName, fieldObject.value);
       }).every(Boolean);
 
       var areCustomPickersValid = _utils.R.toPairs(this.state.form).filter(function (_ref22) {
@@ -638,7 +656,7 @@ function (_React$Component) {
         var _ref25 = (0, _slicedToArray2.default)(_ref24, 1),
             fieldName = _ref25[0];
 
-        return _this9.validateCustomPicker(fieldName);
+        return _this13.validateCustomPicker(fieldName);
       }).every(Boolean);
 
       var areCheckboxesValid = _utils.R.toPairs(this.state.form).filter(function (_ref26) {
@@ -650,7 +668,7 @@ function (_React$Component) {
         var _ref29 = (0, _slicedToArray2.default)(_ref28, 1),
             fieldName = _ref29[0];
 
-        return _this9.validateCheckbox(fieldName);
+        return _this13.validateCheckbox(fieldName);
       }).every(Boolean);
 
       return _utils.R.all(areInputsValid, areCustomPickersValid, areCheckboxesValid, !this.props.isLoading);
@@ -658,14 +676,14 @@ function (_React$Component) {
   }, {
     key: "hasValidCompares",
     get: function get() {
-      var _this10 = this;
+      var _this14 = this;
 
       var inputsToCompare = _utils.R.toPairs(this.state.form).filter(function (_ref30) {
         var _ref31 = (0, _slicedToArray2.default)(_ref30, 2),
             fieldName = _ref31[0],
             fieldObject = _ref31[1];
 
-        return fieldObject.fieldType === _types.FormField.Input && Boolean(_this10.props.formConfig[fieldName].compareWith);
+        return fieldObject.fieldType === _types.FormField.Input && Boolean(_this14.props.formConfig[fieldName].compareWith);
       });
 
       return inputsToCompare.length ? inputsToCompare.map(function (_ref32) {
@@ -673,14 +691,14 @@ function (_React$Component) {
             fieldName = _ref33[0],
             fieldObject = _ref33[1];
 
-        var fieldToCompare = _this10.props.formConfig[fieldName].compareWith.fieldName;
-        return fieldObject.value === _this10.state.form[fieldToCompare].value;
+        var fieldToCompare = _this14.props.formConfig[fieldName].compareWith.fieldName;
+        return fieldObject.value === _this14.state.form[fieldToCompare].value;
       }).every(Boolean) : true;
     }
   }, {
     key: "formValues",
     get: function get() {
-      var _this11 = this;
+      var _this15 = this;
 
       return _utils.R.toPairs(this.state.form).reduce(function (acc, _ref34) {
         var _ref35 = (0, _slicedToArray2.default)(_ref34, 2),
@@ -689,7 +707,7 @@ function (_React$Component) {
 
         if (fieldObject.fieldType === _types.FormField.Input) {
           var inputStateProperties = fieldObject;
-          var submitParser = _this11.props.formConfig[fieldName].submitParser;
+          var submitParser = _this15.props.formConfig[fieldName].submitParser;
           return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, submitParser ? submitParser(fieldObject.value) : inputStateProperties.value));
         }
 
