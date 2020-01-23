@@ -615,8 +615,12 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
             const fieldName = reactElementChild.props.formFieldName
             const configProps = formConfig[fieldName] as FormInputConfigProps
             const { inputProps } = (reactElementChild as React.ReactElement<InputProps>).props
-            const customInputStyles = inputProps && inputProps.style ? inputProps.style : {}
-            const formConfigStyles = configProps.inputProps && configProps.inputProps.style ? configProps.inputProps.style : {}
+            const customInputStyles = inputProps && inputProps.style
+                ? inputProps.style
+                : {}
+            const formConfigStyles = configProps.inputProps && configProps.inputProps.style
+                ? configProps.inputProps.style
+                : {}
 
             return React.cloneElement<InputProps>(reactElementChild, {
                 ...reactElementChild.props,
