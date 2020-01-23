@@ -41,7 +41,7 @@ type InputCompareWith = {
 }
 
 export interface FormInputConfigProps extends FormFieldBase {
-    value: string,
+    value: string | number | boolean,
     inputProps?: React.HTMLProps<HTMLInputElement>,
     validationRules?: Array<FormFieldValidationRule>,
     compareWith?: InputCompareWith,
