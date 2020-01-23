@@ -80,7 +80,7 @@ export type FormConfig = {
 interface FormInputState extends FormFieldBase {
     isValid: boolean,
     hasError?: string,
-    value: string,
+    value: string | boolean | number,
 }
 
 interface FormCustomPickerState extends FormFieldBase {

@@ -111,12 +111,12 @@ var clearFormState = function clearFormState(formConfig) {
     if (config.fieldType === _types.FormField.CustomField) {
       var customFieldConfig = config;
 
-      var _isValidInputValue2 = _utils.R.is(String, customFieldConfig.value) || _utils.R.is(Number, customFieldConfig.value);
+      var _isValidInputValue2 = _utils.R.is(String, customFieldConfig.value) || _utils.R.is(Number, customFieldConfig.value) || _utils.R.is(Boolean, customFieldConfig.value);
 
       return [fieldName, {
         isValid: Boolean(customFieldConfig.value),
         isRequired: config.isRequired,
-        value: '',
+        value: _isValidInputValue2 ? customFieldConfig.value : '',
         fieldType: customFieldConfig.fieldType,
         isPristine: true
       }];
