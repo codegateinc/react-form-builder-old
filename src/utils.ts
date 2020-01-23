@@ -38,7 +38,11 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
 
             if (config.fieldType === FormField.CustomField) {
                 const customFieldConfig = config as FormInputConfigProps
-                const isValidInputValue = R.is(String, customFieldConfig.value) || R.is(Number, customFieldConfig.value)
+                const isValidInputValue = R.all(
+                    R.is(String, customFieldConfig.value),
+                    R.is(Number, customFieldConfig.value),
+                    R.is(Boolean, customFieldConfig.value)
+                )
 
                 return [fieldName, {
                     isValid: Boolean(customFieldConfig.value),
