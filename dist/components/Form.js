@@ -409,7 +409,7 @@ function (_React$Component) {
 
       var formField = this.state.form[formFieldName];
       var formFieldConfigProps = this.props.formConfig[formFieldName];
-      var shouldLiveCheck = Boolean(formField.hasError) || this.isFormValid;
+      var shouldLiveCheck = Boolean(formField.hasError);
       var valueParser = this.props.formConfig[formFieldName].liveParser;
       var newValue = valueParser ? valueParser(value) : value;
       var isValid = shouldLiveCheck ? this.validateField(formFieldName, newValue) : formField.isValid;
