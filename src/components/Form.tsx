@@ -454,7 +454,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
     onTextChange(value: string, formFieldName: string) {
         const formField = this.state.form[formFieldName] as FormInputState
         const formFieldConfigProps = this.props.formConfig[formFieldName] as FormInputConfigProps
-        const shouldLiveCheck = Boolean(formField.hasError) || this.isFormValid
+        const shouldLiveCheck = Boolean(formField.hasError)
         const valueParser = (this.props.formConfig[formFieldName] as FormInputConfigProps).liveParser
         const newValue = valueParser
             ? valueParser(value)
