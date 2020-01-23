@@ -52,7 +52,7 @@ var prepareFormInitialState = function prepareFormInitialState(formConfig) {
     if (config.fieldType === _types.FormField.CustomField) {
       var customFieldConfig = config;
 
-      var _isValidInputValue = _utils.R.all(_utils.R.is(String, customFieldConfig.value), _utils.R.is(Number, customFieldConfig.value), _utils.R.is(Boolean, customFieldConfig.value));
+      var _isValidInputValue = _utils.R.is(String, customFieldConfig.value) || _utils.R.is(Number, customFieldConfig.value) || _utils.R.is(Boolean, customFieldConfig.value);
 
       return [fieldName, {
         isValid: Boolean(customFieldConfig.value),
