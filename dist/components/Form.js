@@ -445,7 +445,7 @@ function (_React$Component) {
       var _this9 = this;
 
       var customPicker = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var currentValue = !customPicker ? this.state.form[fieldName].value.trim() : this.getCustomPickerSelectedValue(fieldName);
+      var currentValue = !customPicker ? this.state.form[fieldName].value : this.getCustomPickerSelectedValue(fieldName);
       var isValid = this.validateField(fieldName, currentValue);
       var formFieldConfigProps = this.props.formConfig[fieldName]; // isValid and compareWith exists and not comparedWithIsPristine
 
