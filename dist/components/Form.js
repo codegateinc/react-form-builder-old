@@ -708,7 +708,7 @@ function (_React$Component) {
         if (fieldObject.fieldType === _types.FormField.Input) {
           var inputStateProperties = fieldObject;
           var submitParser = _this15.props.formConfig[fieldName].submitParser;
-          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, submitParser ? submitParser(fieldObject.value) : inputStateProperties.value));
+          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, submitParser ? submitParser(inputStateProperties.value) : inputStateProperties.value));
         }
 
         if (fieldObject.fieldType === _types.FormField.Checkbox) {
@@ -716,7 +716,9 @@ function (_React$Component) {
         }
 
         if (fieldObject.fieldType === _types.FormField.CustomField) {
-          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, fieldObject.value));
+          var _inputStateProperties = fieldObject;
+          var _submitParser = _this15.props.formConfig[fieldName].submitParser;
+          return _objectSpread({}, acc, (0, _defineProperty2.default)({}, fieldName, _submitParser ? _submitParser(_inputStateProperties.value) : _inputStateProperties.value));
         } // CustomPicker
 
 
