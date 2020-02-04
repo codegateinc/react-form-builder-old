@@ -505,7 +505,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
 
     onInputBlur(fieldName: string, customPicker: boolean = false) {
         const currentValue = !customPicker
-            ? ((this.state.form[fieldName] as FormInputState).value).trim()
+            ? ((this.state.form[fieldName] as FormInputState).value)
             : this.getCustomPickerSelectedValue(fieldName)
         const isValid = this.validateField(fieldName, currentValue)
         const formFieldConfigProps = this.props.formConfig[fieldName] as FormInputConfigProps
