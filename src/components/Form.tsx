@@ -121,7 +121,7 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                     return {
                         ...acc,
                         [fieldName] : submitParser
-                            ? submitParser((fieldObject as FormInputState).value)
+                            ? submitParser(inputStateProperties.value)
                             : inputStateProperties.value
                     }
                 }
@@ -134,9 +134,14 @@ export class Form<T> extends React.Component<FormProps<T>, FormState> {
                 }
 
                 if (fieldObject.fieldType === FormField.CustomField) {
+                    const inputStateProperties = fieldObject as FormInputState
+                    const submitParser = (this.props.formConfig[fieldName] as FormInputConfigProps).submitParser
+
                     return {
                         ...acc,
-                        [fieldName]: (fieldObject as FormCheckboxState).value
+                        [fieldName] : submitParser
+                            ? submitParser(inputStateProperties.value)
+                            : inputStateProperties.value
                     }
                 }
 
